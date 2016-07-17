@@ -1,0 +1,235 @@
+.oni-table {
+
+  border: none;
+  border-collapse: collapse;
+  width: 100%;
+
+  td, th {
+    padding: 12px;
+  }
+
+  th {
+    padding: 45px 12px 30px 12px;
+  }
+
+  thead {
+    text-transform: uppercase;
+    color: #30a5ea;
+    font-size: 10px;
+
+    th {
+      text-align: left;
+    }
+  }
+
+  tbody {
+
+    tr.tr-in-payment {
+      height: 95px;
+      padding: 0;
+
+      td {
+        padding: 0;
+      }
+
+      &:hover {
+        background: #fff;
+        color: rgba(0, 0, 0, 0.870588);
+      }
+    }
+
+    tr {
+      padding: 25px;
+
+      ng-md-icon {
+        fill: #e6eef4;
+      }
+
+      &:hover {
+        background: #57677b;
+        color: #fff;
+
+        ng-md-icon {
+          fill: #58bcf1;
+        }
+
+        td.td-description {
+
+          color: #4eb7f5;
+        }
+
+
+        td.td-sans-light {
+          color: #fff;
+        }
+
+        td.td-sans {
+          color: #fff;
+        }
+      }
+
+      td {
+        border-bottom: 1px solid #eeeff2;
+
+        .td-first {
+          width: 100%;
+          margin-top: 11px;
+          height: 46px;
+          line-height: 46px;
+          font-family: SofiaProSemiBold;
+          color: #465364;
+          font-size: 20px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .td-second {
+          width: 100%;
+          height: 25px;
+          font-family: OpenSans-Light;
+          color: #57677b;
+          font-size: 16px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          .td-second-circle {
+            width: 9px;
+            height: 9px;
+            border: 2px solid #57c1ff;
+            border-radius: 11px;
+            margin-top: 5px;
+            margin-right: 15px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+
+      td.td-description {
+
+        font-family: SofiaProMedium;
+        color: #465364;
+        font-size: 19px;
+
+      }
+
+      td.td-last {
+        border-bottom: 0px solid #eeeff2;
+      }
+
+      td.td-sans-light {
+        font-family: OpenSans-Light;
+        color: #465364;
+      }
+
+      td.td-sans {
+        font-family: OpenSans-Light;
+        color: #586473;
+      }
+
+      td.td-address-string {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+
+    }
+  }
+
+}
+
+.oni-transperent-dialog {
+  background-color: initial;
+  box-shadow: initial;
+
+  .header {
+    color: #fff;
+    font-size: 55px;
+    line-height: 55px;
+    padding: 66px 0 66px 66px;
+  }
+
+  .content {
+    background-color: #fff;
+    padding: 50px 0 70px 0;
+  }
+
+  .secondary {
+    background-color: #f1f5fa;
+    padding: 50px 0px 70px 0px;
+  }
+
+  .title {
+    font-size: 22px;
+    line-height: 40px;
+    color: #57677b;
+  }
+
+  .footerButton {
+    padding: 40px;
+    background-color: #fff;
+
+    button {
+      height: 50px;
+      border-radius: 50px;
+      background-color: #56bffd!important;
+    }
+  }
+}
+
+.oni-autocomplete {
+  height: 63px;
+  margin: 20px 0 20px 0;
+
+  input {
+    height: 63px!important;
+    padding-left:10px;
+    padding-right: 10px;
+
+  }
+
+}
+.oni-autocomplete-for-wrap {
+
+  height: 63px;
+  font-family: OpenSans-Light;
+  line-height: 63px;
+  color: #33353b;
+  font-size: 18px;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+
+  input {
+    height: 63px!important;
+    font-family: OpenSans-Light;
+    line-height: 63px;
+    color: #33353b;
+    font-size: 18px;
+
+  }
+  input:not(.md-input) {
+    height: 63px!important;
+    font-family: OpenSans-Light;
+    line-height: 63px;
+    color: #33353b;
+    font-size: 18px;
+    padding: 0 10px;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+
+  }
+
+  md-autocomplete-wrap {
+    height: 63px;
+    width: 100%;
+    line-height: 63px;
+    border: 1px solid #e9e9e8;
+    font-family: OpenSans-Light;
+    color: #33353b;
+    font-size: 18px;
+    box-sizing: border-box;
+    background: #fff;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+  }
+}
+
+

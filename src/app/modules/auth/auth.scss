@@ -1,0 +1,133 @@
+.error-panel {
+  color: red;
+}
+
+.oni-list-header {
+  .oni-list-content {
+    &-profile_icon {
+      width: 36px;
+      height: 37px;
+      background: url('/assets/images/profile-icon.png') no-repeat scroll 0 0 transparent;
+      margin-top: 94px;
+      display: inline-block;
+    }
+  }
+}
+
+.profile-page {
+  $text-color: #57677b;
+  color: $text-color;
+
+  &_form {
+    .input-container {
+      padding: 0 48px 48px 0;
+
+      label {
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      input {
+        border: 1px solid #f3f3f3;
+        height: 60px;
+        padding: 0 20px;
+        font-size: 18px;
+        color: $text-color;
+      }
+    }
+  }
+
+  .addresses-list {
+    //background-color: #f1f5fa;
+
+    .address-card-wrap {
+      height: 190px;
+      margin: 0 0 50px 0;
+
+      &:nth-child(even) {
+        padding: 0 26px 0 0;
+      }
+      &:nth-child(odd) {
+        padding: 0 0 0 26px;
+      }
+
+      .address-card {
+        background-color: #3d5264;
+        color: #f1f5fa;
+        padding: 14px 36px 33px 36px;
+
+        &_address {
+          margin: 0 0 40px 0;
+
+          &_icon {
+            width: 14px;
+            height: 19px;
+            display: inline-block;
+            margin: 0 24px 0 0;
+            background: url('/assets/images/address-icon.png') no-repeat scroll 0 0 transparent;
+          }
+        }
+
+        &_name {
+          font-weight: bold;
+          margin: 0 0 18px 0;
+        }
+
+        &_phone {
+          &_icon {
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+            margin: 0 20px 0 0;
+            background: url('/assets/images/address-phone-icon.png') no-repeat scroll 0 0 transparent;
+          }
+
+          .status {
+            padding: 0 0 0 24px;
+            line-height: 20px;
+            height: 20px;
+            outline: none;
+          }
+          .default {
+            color: #7dd36a;
+            background: url('/assets/images/profile-address-default.png') no-repeat scroll 0 0 transparent;
+          }
+          .not-default {
+            color: #30a5ea;
+            cursor: pointer;
+            background: url('/assets/images/profile-address-not-default.png') no-repeat scroll 0 0 transparent;
+          }
+        }
+
+        .address-more-dots {
+          width: 24px;
+          height: 24px;
+          display: inline-block;
+          background: url('/assets/images/profile-address-dots.png') no-repeat scroll 0 center transparent;
+        }
+      }
+
+      .address-card-add {
+        height: 190px;
+        text-align: center;
+        padding: 68px 0 0 0;
+
+        .md-icon-button {
+          width: 54px;
+          height: 54px;
+          padding: 0;
+          border-radius: 0;
+          margin: 0;
+          position: relative;
+        }
+        .add-icon {
+          display: inline-block;
+          width: 54px;
+          height: 54px;
+          background: url('/assets/images/add-54.png') no-repeat scroll 0 0 transparent;
+        }
+      }
+    }
+  }
+}

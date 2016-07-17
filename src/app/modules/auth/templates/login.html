@@ -1,0 +1,41 @@
+<div  flex layout="row" layout-align="center center" >
+  <md-content flex="50" md-whiteframe="3" layout-padding>
+    <h2 ng-show="login.signin">Login</h2>
+    <h2 ng-show="!login.signin">Registration</h2>
+    <form ng-submit="login.singIn()" ng-show="login.signin">
+      <div layout="column">
+        <md-input-container>
+          <label>E-mail</label>
+          <input flex type="text" ng-model="login.email" ng-required="true">
+        </md-input-container>
+        <md-input-container>
+          <label>Password</label>
+          <input flex type="password" ng-model="login.password" ng-required="true">
+        </md-input-container>
+        <md-button class="md-raised md-primary" ng-click="login.singIn()">Login</md-button>
+      </div>
+    </form>
+    <form ng-submit="login.singUp()" ng-show="!login.signin">
+      <div layout="column">
+        <md-input-container>
+          <label>E-mail</label>
+          <input flex type="text" ng-model="login.email" ng-required="true">
+        </md-input-container>
+        <md-input-container>
+          <label>Password</label>
+          <input flex type="password" ng-model="login.password" ng-required="true">
+        </md-input-container>
+        <md-button class="md-raised md-primary" ng-click="login.singUp()">Registration</md-button>
+      </div>
+    </form>
+        <div layout="row">
+          <a>
+            <md-button ng-click="login.signin=true">Login</md-button>
+          </a>
+          <a >
+            <md-button ng-click="login.signin=false">Registration</md-button>
+          </a>
+          <span flex></span>
+        </div>
+  </md-content>
+</div>

@@ -1,0 +1,26 @@
+<div  flex layout="row" layout-align="center center" >
+  <md-content flex="50" md-whiteframe="3" layout-padding>
+    <h2>Login</h2>
+    <form ng-submit="singUp.singUp()">
+      <div layout="column">
+        <md-input-container>
+          <label>E-mail</label>
+          <input flex type="text" ng-model="singUp.singUp">
+        </md-input-container>
+        <md-input-container>
+          <label>Password</label>
+          <input flex type="password" ng-model="singUp.password">
+        </md-input-container>
+        <md-button class="md-raised md-primary">Log in</md-button>
+      </div>
+    </form>
+    <div layout="row">
+      <a ui-sref="">
+        <md-button flex >Sing Up</md-button>
+      </a>
+      <a ui-sref="">
+        <md-button flex >Forgot password</md-button>
+      </a>
+    </div>
+  </md-content>
+</div>
