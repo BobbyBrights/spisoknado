@@ -46,6 +46,7 @@ class AuthService {
           _this._progressService.hideCircular();
         });
     }
+  
 
     /**
      *
