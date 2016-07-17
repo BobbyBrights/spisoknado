@@ -6,7 +6,7 @@
                 "lists": {
                     "$uid": "$uid_list"
                 },
-                "share_list": {
+                "share_lists": {
                     "$uid": "$uid_list"
                 }
             }

@@ -1,0 +1,26 @@
+<md-dialog class="oni-transperent-dialog" flex="70">
+    <md-dialog-content>
+
+      <div ng-show="con.loadingFlag">
+        <div layout="column">
+
+          <div class="content" layout="column" layout-align="center center">
+            <md-progress-circular md-mode="indeterminate" flex></md-progress-circular>
+          </div>
+        </div>
+      </div>
+
+      <div ng-show="!con.loadingFlag">
+        <md-content md-whiteframe="3" layout-padding>
+          <div layout="row">
+            <!--Weight-->
+            <md-input-container flex>
+              <label>Title</label>
+              <input type="text" ng-model="con.list.title">
+            </md-input-container>
+          </div>
+          <md-button ng-click="con.create()">Create List</md-button>
+        </md-content>
+      </div>
+    </md-dialog-content>
+</md-dialog>

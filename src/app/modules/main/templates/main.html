@@ -1,8 +1,26 @@
-Главный шаблон<br>
-пользователь: <b>{{mainCtrl.user.email}}</b>
-<a href="#" ng-click="mainCtrl.logout()">выход</a><br><br>
-<a href="#" ui-sref="first.index">первая страница</a>
-<div>
-  <ui-view></ui-view>
+<md-toolbar class="md-hue-2">
+  <div class="md-toolbar-tools">
+    <span flex></span>
+    <md-button class="md-raised" ng-click="mainCtrl.createList()">
+      Create List
+    </md-button>
+    <!--user drop-down-->
+    <md-menu>
+      <md-button ng-click="$mdOpenMenu($event)">
+        {{mainCtrl.user.email}}
+      </md-button>
+      <md-menu-content width="4">
+        <md-menu-item>
+          <md-button ng-click="mainCtrl.logout()">
+            Exit
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+  </div>
+</md-toolbar>
+<div flex layout="row">
+  <md-content flex>
+    <ui-view flex></ui-view>
+  </md-content>
 </div>
-

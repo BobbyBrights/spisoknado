@@ -2,11 +2,20 @@
 import {appSettings} from './app.settings.js'
 
 // creating modules
-angular.module('core', ['ui.router', 'ngResource', 'ngMdIcons', 'ngMaterial','toaster']);
+angular.module('core', ['ui.router', 'ngResource', 'ngMdIcons', 'ngMaterial','toaster'])
+.config(function () {
+      var config = {
+        apiKey: "AIzaSyDxh2DwY1x3S8MGp9wgp0vdX0gC2wBFNSY",
+        authDomain: "spisoknado.firebaseapp.com",
+        databaseURL: "https://spisoknado.firebaseio.com",
+        storageBucket: "spisoknado.appspot.com"
+      };
+      firebase.initializeApp(config);
+  });
 
 angular.module('spisoknado.main', ['core']);
 angular.module('spisoknado.global', ['core']);
-angular.module('spisoknado.first', ['core']);
+angular.module('spisoknado.lists', ['core']);
 angular.module('spisoknado.auth', ['core']);
 
 
@@ -17,28 +26,13 @@ angular.module('core')
 angular.module('spisoknado', [
   'spisoknado.main',
   'spisoknado.global',
-  'spisoknado.first',
+  'spisoknado.lists',
   'spisoknado.auth'
 ])
   .run(function ($state) {
-
-    var config = {
-      apiKey: "AIzaSyDxh2DwY1x3S8MGp9wgp0vdX0gC2wBFNSY",
-      authDomain: "spisoknado.firebaseapp.com",
-      databaseURL: "https://spisoknado.firebaseio.com",
-      storageBucket: "spisoknado.appspot.com"
-    };
-    firebase.initializeApp(config);
-    /*if(authService.getAuthData()){
-      $state.go("app");
-    }else{
-      $state.go("login");
-    }*/
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
+      if (firebase.auth().currentUser) {
         $state.go("app");
       } else {
         $state.go("login");
       }
-    });
   });
