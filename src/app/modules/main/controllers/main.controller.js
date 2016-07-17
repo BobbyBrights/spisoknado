@@ -3,11 +3,11 @@ class MainController {
         this._$state = $state;
         this._$rootScope = $rootScope;
         this._authService = authService;
-      var _this = this;
-      firebase.auth().onAuthStateChanged(function(user) {
-        _this.user = user;
-        _this._$rootScope.$apply();
-      });
+        var _this = this;
+        firebase.auth().onAuthStateChanged(function(user) {
+          _this.user = user
+          _this._$rootScope.$apply();
+        });
     }
 
     logout() {

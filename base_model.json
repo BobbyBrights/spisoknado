@@ -1,0 +1,41 @@
+{
+    "spisoknado": {
+        "users": {
+            "$uid_user": {
+                "email": "email",
+                "lists": {
+                    "$uid": "$uid_list"
+                },
+                "share_list": {
+                    "$uid": "$uid_list"
+                }
+            }
+        },
+        "lists": {
+            "$uid": {
+                "title": "",
+                "author": "$uid_user",
+                "share_users": {
+                    "$uid": "$uid_user"
+                },
+                "share_email": {
+                    "$uid": "email"
+                },
+                "secret_key": "key",
+                "items": {
+                    "$uid": "$uid_item"
+                },
+                "last_update": "date"
+            }
+        },
+        "items": {
+            "$uid": {
+                "title": "title",
+                "parent": "$uid_item",
+                "childs": {
+                    "$uid": "$uid_item"
+                }
+            }
+        }
+    }
+}
