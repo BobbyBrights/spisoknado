@@ -22,10 +22,14 @@ class ListsService {
       var newPostKey = firebase.database().ref().child('lists').push().key;
       var updates = {};
       updates[''+newPostKey] = list;
+      updates[''+newPostKey].user = firebase.auth().currentUser.uid;
       firebase.database().ref().child('lists').update(updates);
       var newPostKey1 = firebase.database().ref().child('users/'+ firebase.auth().currentUser.uid+'/lists').push().key;
       updates = {};
-      updates[''+newPostKey1] = newPostKey;
+      updates[''+newPostKey1] = {
+        key: newPostKey,
+        last_update: new Date()
+      };
       return firebase.database().ref().child('users/'+ firebase.auth().currentUser.uid+'/lists').update(updates);
   }
 
