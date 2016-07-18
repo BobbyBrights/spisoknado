@@ -1,5 +1,20 @@
-<div layout="column">
-  <div layout="row" ng-repeat="list in lists.myLists">
-    {{list.title}}
-  </div>
-</div>
+<md-tabs md-border-bottom md-dynamic-height>
+    <md-tab label="Мои списки">
+        <md-card class="admin-card" layout="column">
+            <md-card-content layout="column" layout-align="space-between">
+                <p class="md-body-2" ng-repeat="list in lists.myLists">
+                    {{list.title}}
+                </p>
+            </md-card-content>
+        </md-card>
+    </md-tab>
+    <md-tab label="Доступные списки">
+        <md-card class="admin-card" layout="column">
+            <md-card-content layout="column" layout-align="space-between">
+                <p class="md-body-2" ng-repeat="list in lists.shareLists">
+                    {{list.title}}
+                </p>
+            </md-card-content>
+        </md-card>
+    </md-tab>
+</md-tabs>
