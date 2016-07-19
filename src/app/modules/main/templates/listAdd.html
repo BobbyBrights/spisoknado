@@ -1,4 +1,4 @@
-<md-dialog class="oni-transperent-dialog" flex="70">
+<md-dialog class="oni-transperent-dialog" flex="50">
     <md-dialog-content>
 
       <div ng-show="con.loadingFlag">
@@ -12,13 +12,34 @@
 
       <div ng-show="!con.loadingFlag">
         <md-content md-whiteframe="3" layout-padding>
+          <h3>название списка</h3>
           <div layout="row">
-            <!--Weight-->
             <md-input-container flex>
               <label>Title</label>
               <input type="text" ng-model="con.list.title">
             </md-input-container>
           </div>
+
+          <div layout="column">
+              <h3>кому расшарить</h3>
+              <form ng-repeat="email in con.shareEmail">
+                  <div layout="row">
+                      <span flex ng-click="con.removeEmail(email)">{{email}}</span>
+                      <md-button class="md-icon-button" ng-click="con.removeEmail(email)">-</md-button>
+                  </div>
+              </form>
+              <form ng-submit="con.addShareEmail()">
+                  <div layout="row">
+                      <md-input-container flex>
+                          <label>Email*</label>
+                          <input type="text" ng-model="con.newShareEmail" />
+                      </md-input-container>
+                      <md-button ng-click="con.addShareEmail()">+</md-button>
+                      <input type="submit" ng-show="false" />
+                  </div>
+              </form>
+          </div>
+
           <md-button ng-click="con.create()">Create List</md-button>
         </md-content>
       </div>

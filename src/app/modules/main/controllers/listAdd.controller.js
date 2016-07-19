@@ -12,6 +12,8 @@ class ListAddModalController {
         this.list = {
             title: ""
         };
+        this.shareEmail = [];
+        this.newShareEmail = '';
     }
 
     /**
@@ -23,7 +25,7 @@ class ListAddModalController {
 
     create() {
         this.loadingFlag = true;
-        this._listsService.createList(this.list)
+        this._listsService.createList(this.list, this.shareEmail)
           .then((data) => {
               this.closeDialog();
           })
@@ -31,6 +33,23 @@ class ListAddModalController {
               this._notifyService.error(error);
               this.loadingFlag = false;
           });
+    }
+
+    addShareEmail() {
+      if(this.newShareEmail==null || this.newShareEmail===undefined || this.newShareEmail==''){
+        return;
+      }
+      this.shareEmail.push(this.newShareEmail);
+      this.newShareEmail = '';
+    }
+
+    removeEmail(email) {
+      this.shareEmail.forEach((item, i) => {
+        if(item==email){
+          this.shareEmail.splice(i,1);
+          return;
+        }
+      })
     }
 }
 

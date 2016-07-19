@@ -57,6 +57,9 @@ class AuthService {
                 "share_lists": ""
             };
             firebase.database().ref('users').update(newUser);
+            var newEmail = {};
+            newEmail[this.refactorEmail(email)+""] = user.uid;
+            firebase.database().ref('emails').update(newEmail);
         });
     }
 
@@ -74,6 +77,17 @@ class AuthService {
             _this._notifyService.error(error);
             _this._progressService.hideCircular();
         });
+    }
+
+    refactorEmail(email) {
+      email = email.replace(/\@/g,"_at_");
+      email = email.replace(/\./g,"_pp_");
+      return email;
+    }
+
+    getUserByEmail(email) {
+      var refactoringEmail = this.refactorEmail(email);
+      return firebase.database().ref('emails/' + refactoringEmail).once('value');
     }
 }
 

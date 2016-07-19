@@ -11,6 +11,9 @@
                 }
             }
         },
+        "emails": {
+            "email": "$uid_user"
+        },
         "lists": {
             "$uid": {
                 "title": "",
