@@ -1,0 +1,10 @@
+.table {
+
+  tr {
+    cursor: pointer;
+
+    &:hover {
+      background-color: $table-bg-hover;
+    }
+  }
+}

@@ -11,6 +11,7 @@
     "angular": "~1.5.3",
     "angular-jwt": "^0.0.9",
     "AngularJS-Toaster": "angularjs-toaster#^2.0.0",
+    "bootstrap-sass": "~3.3.6",
     "jquery": "^2.2.4",
     "angular-material-icons": "^0.7.0",
     "firebase": "^2.4.2",

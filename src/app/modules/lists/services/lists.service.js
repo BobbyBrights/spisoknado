@@ -82,6 +82,38 @@ class ListsService {
         return text;
   }
 
+  iHavePermissionToList(key) {
+    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/lists').once('value')
+      .then((res) => {
+        var flag = false;
+        for(var x in res.val()){
+          if(res.val()[x]==key){
+            flag = true;
+            break;
+          }
+        }
+        if(!flag){
+          firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/share_lists').once('value')
+            .then((res) => {
+              var flag = false;
+              for(var x in res.val()){
+                if(res.val()[x]==key){
+                  flag = true;
+                  break;
+                }
+              }
+              if(!flag){
+                return 0;
+              }else{
+                return 2;
+              }
+            });
+        }else{
+          return 1;
+        }
+      });
+  }
+
 }
 ListsService.$inject = ['$resource', 'progressService', 'notifyService', '$state', '$rootScope', 'authService'];
 

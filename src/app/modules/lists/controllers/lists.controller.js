@@ -1,9 +1,10 @@
 class ListsController {
-  constructor($rootScope, $mdDialog, progressService, notifyService, $scope, listsService) {
+  constructor($rootScope, $mdDialog, progressService, notifyService, $scope, listsService, $state) {
     this._$mdDialog = $mdDialog;
     this._progressService = progressService;
     this._$rootScope = $rootScope;
     this._$scope = $scope;
+    this._$state = $state;
     this._notifyService = notifyService;
     this._listsService = listsService;
     this.myLists = [];
@@ -90,9 +91,13 @@ class ListsController {
       });
   }
 
+  goToList(list) {
+      this._$state.go('lists.listCard',{id: list.key});
+  }
+
 }
 
-ListsController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'notifyService', '$scope', 'listsService'];
+ListsController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'notifyService', '$scope', 'listsService', '$state'];
 
 export {
   ListsController

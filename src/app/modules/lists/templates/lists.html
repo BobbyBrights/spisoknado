@@ -2,18 +2,22 @@
     <md-tab label="Мои списки">
         <md-card class="admin-card" layout="column">
             <md-card-content layout="column" layout-align="space-between">
-                <p class="md-body-2" ng-repeat="list in lists.myLists">
-                    {{list.title}}
-                </p>
+                <table class="table table-hover clickable no-padding table-text-align-top">
+                  <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myLists" >
+                    <td>{{list.title}}</td>
+                  </tr>
+                </table>
             </md-card-content>
         </md-card>
     </md-tab>
     <md-tab label="Доступные списки">
         <md-card class="admin-card" layout="column">
             <md-card-content layout="column" layout-align="space-between">
-                <p class="md-body-2" ng-repeat="list in lists.myShareLists">
-                    {{list.title}}
-                </p>
+                <table class="table table-hover clickable no-padding table-text-align-top">
+                  <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myShareLists" >
+                    <td>{{list.title}}</td>
+                  </tr>
+                </table>
             </md-card-content>
         </md-card>
     </md-tab>
