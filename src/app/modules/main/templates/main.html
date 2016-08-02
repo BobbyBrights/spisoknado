@@ -1,12 +1,18 @@
 <md-toolbar class="md-hue-2">
   <div class="md-toolbar-tools">
     <span flex></span>
-    <md-button class="md-raised" ng-click="mainCtrl.createList()">
-      Create List
+    <md-button class="md-raised" ng-click="mainCtrl.login()" ng-show="!mainCtrl.user">
+      Войти
+    </md-button>
+    <md-button class="md-raised" ng-click="mainCtrl.myList()" ng-show="mainCtrl.user">
+      Мои списки
+    </md-button>
+    <md-button class="md-raised" ng-click="mainCtrl.createList()" ng-show="mainCtrl.user">
+      Создать список
     </md-button>
     <!--user drop-down-->
     <md-menu>
-      <md-button ng-click="$mdOpenMenu($event)">
+      <md-button ng-click="$mdOpenMenu($event)" ng-show="mainCtrl.user">
         {{mainCtrl.user.email}}
       </md-button>
       <md-menu-content width="4">

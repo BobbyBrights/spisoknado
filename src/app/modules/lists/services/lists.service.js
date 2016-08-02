@@ -20,6 +20,40 @@ class ListsService {
         return firebase.database().ref('lists/' + uid).once('value');
   }
 
+  getItemById(uid) {
+        return firebase.database().ref('items/' + uid).once('value');
+  }
+
+  writeChangeToList(uid) {
+        let ref = firebase.database().ref('lists/' + uid + '/last_update');
+        ref.update(new Date());
+        this.getListById(uid)
+          .then((res) => {
+            let author = res.val().author;
+            firebase.database().ref('users/' + author + '/lists').once('value')
+              .then((res) => {
+                for(let x in res.val()){
+                  if(res.val()[x].key == uid) {
+                    firebase.database().ref('users/' + author + '/lists/' + x + '/last_update').update(new Date());
+                    break;
+                  }
+                }
+              });
+
+            for(let y in res.val().share_users){
+              firebase.database().ref('users/' + res.val().share_users[y] + '/share_lists').once('value')
+              .then((res) => {
+                for(let x in res.val()){
+                  if(res.val()[x].key == uid) {
+                    firebase.database().ref('users/' + res.val().share_users[y] + '/share_lists/' + x + '/last_update').update(new Date());
+                    break;
+                  }
+                }
+              });
+            }
+          })
+  }
+
   createList(list, shareEmail) {
       var newPostKey = firebase.database().ref().child('lists').push().key;
       var updates = {};
@@ -84,31 +118,13 @@ class ListsService {
   }
 
   iHavePermissionToList(key) {
-    return firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/lists').once('value')
-      .then((res) => {
-        var flag = false;
-        for(var x in res.val()){
-          if(res.val()[x]==key){
-            flag = true;
-            break;
-          }
-        }
-        //res = flag
-      });
+    let ref = firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/lists');
+    return ref.once('value');
   }
 
   iHavePermissionToShareList(key) {
-      return firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/share_lists').once('value')
-        .then((res) => {
-          var flag = false;
-          for(var x in res.val()){
-            if(res.val()[x]==key){
-              flag = true;
-              break;
-            }
-          }
-          //res = flag
-        });
+      let ref = firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/share_lists');
+      return ref.once('value');
   }
 
 }

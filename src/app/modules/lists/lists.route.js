@@ -13,7 +13,7 @@ export function routerConfig($stateProvider) {
       controllerAs: 'lists'
     })
     .state('lists.listCard', {
-        url: '/list/:id',
+        url: '/list/:id/:email/:kod',
         templateUrl: 'app/modules/lists/templates/list.html',
         controller: 'ListController',
         controllerAs: 'listCardCtrl',
@@ -21,6 +21,14 @@ export function routerConfig($stateProvider) {
             listId: ['$stateParams',
                 ($stateParams) => {
                     return $stateParams.id;
+                }],
+            email: ['$stateParams',
+                ($stateParams) => {
+                    return $stateParams.email;
+                }],
+            kod: ['$stateParams',
+                ($stateParams) => {
+                    return $stateParams.kod;
                 }]
         }
     });

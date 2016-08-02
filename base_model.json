@@ -4,10 +4,16 @@
             "$uid_user": {
                 "email": "email",
                 "lists": {
-                    "$uid": "$uid_list"
+                    "$uid": {
+                      "key": "$uid_list",
+                      "last_update": "date"
+                    }
                 },
                 "share_lists": {
-                    "$uid": "$uid_list"
+                    "$uid": {
+                      "key": "$uid_list",
+                      "last_update": "date"
+                    }
                 }
             }
         },

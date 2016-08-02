@@ -14,6 +14,7 @@ class MainController {
             let interval_current_user = window.setInterval(function(){
               if(firebase.auth().currentUser!=null){
                 _this.user = firebase.auth().currentUser;
+                _this._$rootScope.$apply();
                 if($state.current.name == "app") {
                   $state.go("lists.list");
                 }
@@ -21,13 +22,23 @@ class MainController {
               }
             },15);
           } else {
-            $state.go("login");
+            if($state.current.name!='lists.listCard') {
+              $state.go("login");
+            }
           }
         });
     }
 
     logout() {
         this._authService.logOut();
+    }
+
+    login() {
+        this._$state.go("login");
+    }
+
+    myList() {
+        this._$state.go("lists.list");
     }
 
     createList() {
