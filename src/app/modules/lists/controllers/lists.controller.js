@@ -9,8 +9,14 @@ class ListsController {
     this._listsService = listsService;
     this.myLists = [];
     this.myShareLists = [];
-    this.createOn();
-    this.createOnShare();
+    let _this = this;
+    let interval_current_user = window.setInterval(function(){
+      if(CONSTANT_SPISOKNADO.user_uid!=null){
+        _this.createOn();
+        _this.createOnShare();
+        window.clearInterval(interval_current_user);
+      }
+    },15);
   }
 
   createOn() {

@@ -1,18 +1,19 @@
 class ListsService {
-  constructor($resource, progressService, notifyService, $state, $rootScope, authService) {
+  constructor($resource, progressService, notifyService, $state, $rootScope, authService, appSettings) {
     this._progressService = progressService;
     this._authService = authService;
     this._notifyService = notifyService;
     this._$state = $state;
     this._$rootScope = $rootScope;
+    this._appSetting = appSettings;
   }
 
   getMyListsList() {
-        return firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/lists');
+        return firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/lists');
   }
 
   getMyShareListsList() {
-        return firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/share_lists');
+        return firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/share_lists');
   }
 
   getListById(uid) {
@@ -23,7 +24,7 @@ class ListsService {
       var newPostKey = firebase.database().ref().child('lists').push().key;
       var updates = {};
       updates[''+newPostKey] = list;
-      updates[''+newPostKey].author = firebase.auth().currentUser.uid;
+      updates[''+newPostKey].author = CONSTANT_SPISOKNADO.user_uid;
       updates[''+newPostKey].share_users = "";
       updates[''+newPostKey].share_email = "";
       updates[''+newPostKey].secret_key = this.createSecretCod();
@@ -41,13 +42,13 @@ class ListsService {
         })
       });
 
-      var newPostKey1 = firebase.database().ref().child('users/'+ firebase.auth().currentUser.uid+'/lists').push().key;
+      var newPostKey1 = firebase.database().ref().child('users/'+ CONSTANT_SPISOKNADO.user_uid+'/lists').push().key;
       updates = {};
       updates[''+newPostKey1] = {
         key: newPostKey,
         last_update: new Date()
       };
-      return firebase.database().ref().child('users/'+ firebase.auth().currentUser.uid+'/lists').update(updates);
+      return firebase.database().ref().child('users/'+ CONSTANT_SPISOKNADO.user_uid+'/lists').update(updates);
   }
 
   writeShareUser(newPostKey, shareUser){
@@ -83,7 +84,7 @@ class ListsService {
   }
 
   iHavePermissionToList(key) {
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/lists').once('value')
+    return firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/lists').once('value')
       .then((res) => {
         var flag = false;
         for(var x in res.val()){
@@ -92,30 +93,26 @@ class ListsService {
             break;
           }
         }
-        if(!flag){
-          firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/share_lists').once('value')
-            .then((res) => {
-              var flag = false;
-              for(var x in res.val()){
-                if(res.val()[x]==key){
-                  flag = true;
-                  break;
-                }
-              }
-              if(!flag){
-                return 0;
-              }else{
-                return 2;
-              }
-            });
-        }else{
-          return 1;
-        }
+        //res = flag
       });
   }
 
+  iHavePermissionToShareList(key) {
+      return firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/share_lists').once('value')
+        .then((res) => {
+          var flag = false;
+          for(var x in res.val()){
+            if(res.val()[x]==key){
+              flag = true;
+              break;
+            }
+          }
+          //res = flag
+        });
+  }
+
 }
-ListsService.$inject = ['$resource', 'progressService', 'notifyService', '$state', '$rootScope', 'authService'];
+ListsService.$inject = ['$resource', 'progressService', 'notifyService', '$state', '$rootScope', 'authService', 'appSettings'];
 
 export {
   ListsService

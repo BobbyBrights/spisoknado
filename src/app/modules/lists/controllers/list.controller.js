@@ -11,11 +11,20 @@ class ListController {
     this._notifyService = notifyService;
     this._listsService = listsService;
     this.listId = listId;
-    
+
+    this._listsService.iHavePermissionToList(listId)
+      .then((res) => {
+        console.log(res);
+      });
+    this._listsService.iHavePermissionToShareList(listId)
+      .then((res) => {
+        console.log(res);
+      });
+
     if(!this._listsService.iHavePermissionToList(listId)){
       this._$state.go('lists.list');
     }
-    
+
   }
 
 }

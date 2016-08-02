@@ -30,9 +30,5 @@ angular.module('spisoknado', [
   'spisoknado.auth'
 ])
   .run(function ($state) {
-      if (firebase.auth().currentUser) {
-        $state.go("app");
-      } else {
-        $state.go("login");
-      }
+    $state.go("app");
   });
