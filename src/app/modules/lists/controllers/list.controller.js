@@ -15,6 +15,7 @@ class ListController {
     this.listId = listId;
     this.email = email;
     this.kod = kod;
+    this.newItem = "";
 
     if(this.email!='' && this.kod!=''){
       this.checkListByShareEmail();
@@ -30,6 +31,8 @@ class ListController {
   }
 
   checkPermission() {
+
+
     this._listsService.iHavePermissionToList(this.listId)
         .then((res) => {
           let flag = false;
@@ -84,6 +87,11 @@ class ListController {
   }
 
   loadList() {
+
+    firebase.database().ref('lists/' + this.listId).on('child_changed', function(data) {
+          this.loadList();
+    });
+
     this._listsService.getListById(this.listId)
       .then((res) => {
         this.listObject = res.val();
@@ -92,17 +100,25 @@ class ListController {
         this.loadParentItems();
       });
   }
-  
+
   loadParentItems() {
     let items = this.listObject.items;
     this.listObject.items = [];
     for(let x in items){
       this._listsService.getItemById(items[x])
         .then((res) => {
-          this.listObject.items.push(res.val());
+          this.listObject.items.unshift(res.val());
           this._$rootScope.$apply();
         });
     }
+  }
+
+  addItem() {
+    if(!this.newItem){
+      return;
+    }
+    this._listsService.createItem(this.listObject.id,this.newItem);
+    this.newItem = "";
   }
 
 }

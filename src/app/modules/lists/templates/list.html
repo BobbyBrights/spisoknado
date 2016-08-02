@@ -1,5 +1,26 @@
 <div layout="column" layout-sm="column">
-  <md-content layout-padding flex layout="row" layout-align="center center">
+  <md-content layout-padding flex layout="column" layout-align="center center">
     <h3 class="md-headline">{{listCardCtrl.listObject.title}}</h3>
+
+    <form ng-submit="listCardCtrl.addItem()" name="formCreate">
+        <section class="md-dialog-content">
+                <section layout="row" flex>
+                    <md-input-container flex>
+                        <label>Новый пункт</label>
+                        <input ng-model="listCardCtrl.newItem">
+                    </md-input-container>
+                    <md-button class="md-raised md-primary" type="submit">
+                      Добавить
+                    </md-button>
+                </section>
+        </section>
+    </form>
+
+    <div layout="column">
+      <p ng-repeat="item in listCardCtrl.listObject.items">
+        {{item.title}}
+      </p>
+    </div>
+
   </md-content>
 </div>

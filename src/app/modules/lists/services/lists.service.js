@@ -26,6 +26,8 @@ class ListsService {
 
   writeChangeToList(uid) {
         let ref = firebase.database().ref('lists/' + uid + '/last_update');
+        console.log(uid);
+        console.log(ref);
         ref.update(new Date());
         this.getListById(uid)
           .then((res) => {
@@ -40,7 +42,7 @@ class ListsService {
                 }
               });
 
-            for(let y in res.val().share_users){
+            /*for(let y in res.val().share_users){
               firebase.database().ref('users/' + res.val().share_users[y] + '/share_lists').once('value')
               .then((res) => {
                 for(let x in res.val()){
@@ -50,7 +52,7 @@ class ListsService {
                   }
                 }
               });
-            }
+            }*/
           })
   }
 
@@ -61,6 +63,7 @@ class ListsService {
       updates[''+newPostKey].author = CONSTANT_SPISOKNADO.user_uid;
       updates[''+newPostKey].share_users = "";
       updates[''+newPostKey].share_email = "";
+      updates[''+newPostKey].last_update = "";
       updates[''+newPostKey].secret_key = this.createSecretCod();
       firebase.database().ref().child('lists').update(updates);
 
@@ -83,6 +86,19 @@ class ListsService {
         last_update: new Date()
       };
       return firebase.database().ref().child('users/'+ CONSTANT_SPISOKNADO.user_uid+'/lists').update(updates);
+  }
+
+  createItem(listId, itemTitle) {
+      let newPostKey = firebase.database().ref().child('items').push().key;
+      let updates = {};
+      updates[''+newPostKey] = {};
+      updates[''+newPostKey].title = itemTitle;
+      firebase.database().ref().child('items').update(updates);
+      let newPostKey1 = firebase.database().ref().child('lists/' + listId + '/items').push().key;
+      updates = {};
+      updates[''+newPostKey1] = newPostKey;
+      firebase.database().ref().child('lists/' + listId + '/items').update(updates);
+      this.writeChangeToList(listId);
   }
 
   writeShareUser(newPostKey, shareUser){
