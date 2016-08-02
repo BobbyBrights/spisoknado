@@ -16,6 +16,7 @@ class ListController {
     this.email = email;
     this.kod = kod;
     this.newItem = "";
+    this.last_update = "";
 
     if(this.email!='' && this.kod!=''){
       this.checkListByShareEmail();
@@ -28,6 +29,16 @@ class ListController {
         }
       },15);
     }
+  }
+
+  createOnChange() {
+    let _this = this;
+    firebase.database().ref('lists/' + this.listId).on('child_changed', function(data) {
+          if(typeof data.val() == 'string' && data.val()!=_this.last_update){
+            _this.last_update = data.val();
+            _this.loadList();
+          }
+    });
   }
 
   checkPermission() {
@@ -55,10 +66,12 @@ class ListController {
                 if(!flag){
                   this._$state.go('lists.list');
                 }else{
+                  this.createOnChange();
                   this.loadList();
                 }
               });
           }else{
+            this.createOnChange();
             this.loadList();
           }
         });
@@ -81,16 +94,13 @@ class ListController {
         if(!flag){
           this._$state.go('lists.list');
         }else{
+          this.createOnChange();
           this.loadList();
         }
       });
   }
 
   loadList() {
-
-    firebase.database().ref('lists/' + this.listId).on('child_changed', function(data) {
-          this.loadList();
-    });
 
     this._listsService.getListById(this.listId)
       .then((res) => {

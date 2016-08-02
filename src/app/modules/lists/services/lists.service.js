@@ -25,10 +25,10 @@ class ListsService {
   }
 
   writeChangeToList(uid) {
-        let ref = firebase.database().ref('lists/' + uid + '/last_update');
-        console.log(uid);
-        console.log(ref);
-        ref.update(new Date());
+        let update = new Date();
+        update += "";
+        let ref = firebase.database().ref().child('lists/' + uid + '/last_update');
+        ref.set(update);
         this.getListById(uid)
           .then((res) => {
             let author = res.val().author;
@@ -36,23 +36,24 @@ class ListsService {
               .then((res) => {
                 for(let x in res.val()){
                   if(res.val()[x].key == uid) {
-                    firebase.database().ref('users/' + author + '/lists/' + x + '/last_update').update(new Date());
+                    firebase.database().ref('users/' + author + '/lists/' + x + '/last_update').set(update);
                     break;
                   }
                 }
               });
 
-            /*for(let y in res.val().share_users){
+
+            for(let y in res.val().share_users){
               firebase.database().ref('users/' + res.val().share_users[y] + '/share_lists').once('value')
               .then((res) => {
                 for(let x in res.val()){
                   if(res.val()[x].key == uid) {
-                    firebase.database().ref('users/' + res.val().share_users[y] + '/share_lists/' + x + '/last_update').update(new Date());
+                    res.ref.child(x+'/last_update').set(update);
                     break;
                   }
                 }
               });
-            }*/
+            }
           })
   }
 
