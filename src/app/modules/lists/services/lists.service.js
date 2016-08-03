@@ -24,11 +24,31 @@ class ListsService {
         return firebase.database().ref('items/' + uid).once('value');
   }
 
-  writeChangeToList(uid) {
+  removeItemById(listId, itemKey) {
+        firebase.database().ref('items/' + itemKey).remove();
+        firebase.database().ref('lists/' + listId + '/items').once('value')
+          .then((res) => {
+            for(var x in res.val()){
+              if(res.val()[x] == itemKey){
+                firebase.database().ref('lists/' + listId + '/items/' + x).remove();
+                break;
+              }
+            }
+          });
+        this.writeChangeToList(listId, itemKey, "remove")
+  }
+
+  writeChangeToList(uid, itemKey, action) {
         let update = new Date();
         update += "";
+        let updateObject = {
+          date: update,
+          item: itemKey,
+          action: action,
+          user: CONSTANT_SPISOKNADO.user_uid
+        };
         let ref = firebase.database().ref().child('lists/' + uid + '/last_update');
-        ref.set(update);
+        ref.set(updateObject);
         this.getListById(uid)
           .then((res) => {
             let author = res.val().author;
@@ -36,7 +56,7 @@ class ListsService {
               .then((res) => {
                 for(let x in res.val()){
                   if(res.val()[x].key == uid) {
-                    firebase.database().ref('users/' + author + '/lists/' + x + '/last_update').set(update);
+                    firebase.database().ref('users/' + author + '/lists/' + x + '/last_update').set(updateObject);
                     break;
                   }
                 }
@@ -48,7 +68,7 @@ class ListsService {
               .then((res) => {
                 for(let x in res.val()){
                   if(res.val()[x].key == uid) {
-                    res.ref.child(x+'/last_update').set(update);
+                    res.ref.child(x+'/last_update').set(updateObject);
                     break;
                   }
                 }
@@ -99,7 +119,7 @@ class ListsService {
       updates = {};
       updates[''+newPostKey1] = newPostKey;
       firebase.database().ref().child('lists/' + listId + '/items').update(updates);
-      this.writeChangeToList(listId);
+      this.writeChangeToList(listId, newPostKey, "update");
   }
 
   writeShareUser(newPostKey, shareUser){

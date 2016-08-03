@@ -17,9 +17,9 @@
     </form>
 
     <div layout="column">
-      <p ng-repeat="item in listCardCtrl.listObject.items">
-        {{item.title}}
-      </p>
+      <div ng-repeat="item in listCardCtrl.listObject.items" layout="row">
+        <span class="list-item">{{item.value.title}}</span><span flex></span><md-button class="md-icon-button" ng-click="listCardCtrl.removeItem(item.key)"><md-icon>delete_forever</md-icon></md-button>
+      </div>
     </div>
 
   </md-content>

@@ -1,3 +1,5 @@
+import {findIndex, remove} from 'lodash';
+
 /**
  * Created by gr on 29.07.16.
  */
@@ -16,7 +18,10 @@ class ListController {
     this.email = email;
     this.kod = kod;
     this.newItem = "";
-    this.last_update = "";
+    this.last_update = {
+      data: new Date(),
+      item: ""
+    };
 
     if(this.email!='' && this.kod!=''){
       this.checkListByShareEmail();
@@ -34,16 +39,25 @@ class ListController {
   createOnChange() {
     let _this = this;
     firebase.database().ref('lists/' + this.listId).on('child_changed', function(data) {
-          if(typeof data.val() == 'string' && data.val()!=_this.last_update){
+          if(typeof data.val().date == 'string' && data.val().date!=_this.last_update.date){
+
+            if(data.val().user == CONSTANT_SPISOKNADO.user_uid){
+              return;
+            }
+
             _this.last_update = data.val();
-            _this.loadList();
+            if(data.val().action == "update"){
+              _this.updateItem(data.val().item);
+              return;
+            }
+            if(data.val().action == "remove"){
+              _this.removeItemFront(data.val().item);
+            }
           }
     });
   }
 
   checkPermission() {
-
-
     this._listsService.iHavePermissionToList(this.listId)
         .then((res) => {
           let flag = false;
@@ -101,7 +115,6 @@ class ListController {
   }
 
   loadList() {
-
     this._listsService.getListById(this.listId)
       .then((res) => {
         this.listObject = res.val();
@@ -117,7 +130,7 @@ class ListController {
     for(let x in items){
       this._listsService.getItemById(items[x])
         .then((res) => {
-          this.listObject.items.unshift(res.val());
+          this.listObject.items.unshift({value: res.val(), key: res.key});
           this._$rootScope.$apply();
         });
     }
@@ -129,6 +142,36 @@ class ListController {
     }
     this._listsService.createItem(this.listObject.id,this.newItem);
     this.newItem = "";
+  }
+
+  updateItem(itemId) {
+    let index = findIndex(this.listObject.items, function(o) { return o.key == itemId; });
+    if(index == -1){
+      this.addItemToList(itemId);
+      return;
+    }
+    this._listsService.getItemById(itemId)
+        .then((res) => {
+          this.listObject.items[index] = {value: res.val(), key: res.key};
+          this._$rootScope.$apply();
+        });
+  }
+
+  addItemToList(itemId) {
+    this._listsService.getItemById(itemId)
+        .then((res) => {
+          this.listObject.items.unshift({value: res.val(), key: res.key});
+          this._$rootScope.$apply();
+        });
+  }
+
+  removeItem(itemId){
+    remove(this.listObject.items, function(o) { return o.key == itemId; });
+    this._listsService.removeItemById(this.listObject.id, itemId)
+  }
+
+  removeItemFront(itemId){
+    remove(this.listObject.items, function(o) { return o.key == itemId; });
   }
 
 }
