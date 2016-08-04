@@ -120,6 +120,7 @@ class ListsService {
       updates[''+newPostKey1] = newPostKey;
       firebase.database().ref().child('lists/' + listId + '/items').update(updates);
       this.writeChangeToList(listId, newPostKey, "update");
+      return newPostKey;
   }
 
   writeShareUser(newPostKey, shareUser){
@@ -162,6 +163,14 @@ class ListsService {
   iHavePermissionToShareList(key) {
       let ref = firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/share_lists');
       return ref.once('value');
+  }
+
+  updateTitleItem(listId, item) {
+    let ref = firebase.database().ref().child('items/' + item.key);
+    ref.update({
+      title: item.value.title
+    });
+    this.writeChangeToList(listId, item.key, "update");
   }
 
 }

@@ -130,7 +130,7 @@ class ListController {
     for(let x in items){
       this._listsService.getItemById(items[x])
         .then((res) => {
-          this.listObject.items.unshift({value: res.val(), key: res.key});
+          this.listObject.items.push({value: res.val(), key: res.key, hide: false});
           this._$rootScope.$apply();
         });
     }
@@ -140,8 +140,9 @@ class ListController {
     if(!this.newItem){
       return;
     }
-    this._listsService.createItem(this.listObject.id,this.newItem);
+    let itemId = this._listsService.createItem(this.listObject.id,this.newItem);
     this.newItem = "";
+    this.addItemToList(itemId);
   }
 
   updateItem(itemId) {
@@ -152,7 +153,7 @@ class ListController {
     }
     this._listsService.getItemById(itemId)
         .then((res) => {
-          this.listObject.items[index] = {value: res.val(), key: res.key};
+          this.listObject.items[index] = {value: res.val(), key: res.key, hide: false};
           this._$rootScope.$apply();
         });
   }
@@ -160,7 +161,7 @@ class ListController {
   addItemToList(itemId) {
     this._listsService.getItemById(itemId)
         .then((res) => {
-          this.listObject.items.unshift({value: res.val(), key: res.key});
+          this.listObject.items.push({value: res.val(), key: res.key, hide: false});
           this._$rootScope.$apply();
         });
   }
@@ -172,6 +173,22 @@ class ListController {
 
   removeItemFront(itemId){
     remove(this.listObject.items, function(o) { return o.key == itemId; });
+  }
+
+  openUpdateItem(item) {
+    this.listObject.items.forEach(it => {
+      it.hide = it.key === item.key;
+      if(it.hide){
+        setTimeout(function(){
+          $("item"+item.key).focus();
+        },50);
+      }
+    });
+  }
+
+  updateTitleItem(item) {
+    this._listsService.updateTitleItem(this.listObject.id, item);
+    item.hide = false;
   }
 
 }

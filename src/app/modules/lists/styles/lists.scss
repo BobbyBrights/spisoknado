@@ -12,3 +12,26 @@
 .list-item {
   line-height: 40px;
 }
+
+.spisoknado-hide {
+  display: none;
+}
+
+.spisoknado-pointer {
+  cursor: pointer;
+}
+
+.spisoknado-input-container {
+  margin: 0;
+  padding: 0;
+  height: auto;
+
+  .md-errors-spacer {
+    min-height: 0;
+  }
+}
+
+.spisoknado-list-item {
+  line-height: 20px;
+  margin-bottom: 10px;
+}
