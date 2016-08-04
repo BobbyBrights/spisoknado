@@ -180,7 +180,7 @@ class ListController {
       it.hide = it.key === item.key;
       if(it.hide){
         setTimeout(function(){
-          $("item"+item.key).focus();
+          $("#item"+item.key).focus();
         },50);
       }
     });
