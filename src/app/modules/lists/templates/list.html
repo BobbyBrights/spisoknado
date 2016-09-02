@@ -27,7 +27,7 @@
         </form>
         <span flex></span>
         <md-input-container class="spisoknado-input-container spisoknado-input-container-short" flex="10">
-            <input ng-model="item.value.weight" id="item-weight-{{item.key}}" type="number" min="0" ng-blur="listCardCtrl.updateFrontItem(item)">
+            <input ng-model="item.value.weight" id="item-weight-{{item.key}}" type="number" pattern="\d*" min="0" ng-blur="listCardCtrl.updateFrontItem(item)">
         </md-input-container>
         <md-input-container class="spisoknado-input-container spisoknado-input-container-short" flex="10">
             <md-select ng-model="item.value.count" ng-blur="listCardCtrl.updateFrontItem(item)">
