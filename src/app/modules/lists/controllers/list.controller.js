@@ -194,10 +194,6 @@ class ListController {
   updateFrontItem(item) {
     this._listsService.updateFrontItem(this.listObject.id, item);
     item.hide = false;
-    console.log(item);
-    console.log(this.listObject);
-    this.listObject.items[findIndex(this.listObject.items, o => o.key === item.key )] = item;
-    console.log(this.listObject);
   }
 
   getSumNotComplete() {
@@ -206,8 +202,8 @@ class ListController {
     }
     let sum = 0;
     this.listObject.items.forEach(it => {
-      if(!it.complete) {
-        sum += it.weight*it.count;
+      if(!it.value.complete) {
+        sum += it.value.weight*it.value.count;
       }
     });
     return sum;
@@ -219,8 +215,8 @@ class ListController {
     }
     let sum = 0;
     this.listObject.items.forEach(it => {
-      if(it.complete) {
-        sum += it.weight*it.count;
+      if(it.value.complete) {
+        sum += it.value.weight*it.value.count;
       }
     });
     return sum;
@@ -232,7 +228,7 @@ class ListController {
     }
     let sum = 0;
     this.listObject.items.forEach(it => {
-        sum += it.weight*it.count;
+        sum += it.value.weight*it.value.count;
     });
     return sum;
   }
