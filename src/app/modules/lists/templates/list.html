@@ -15,10 +15,10 @@
     </div>
 
     <div layout="column">
-      <div ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="!item.value.complete">
-        <md-checkbox ng-model="item.value.complete" ng-show="!item.hide" ng-change="listCardCtrl.updateFrontItem(item)">
+      <div class="item-block" ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="!item.value.complete" layout-align="space-between center">
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-show="!item.hide" ng-change="listCardCtrl.updateFrontItem(item)">
         </md-checkbox>
-        <span class="list-item spisoknado-pointer spisoknado-list-item" ng-show="!item.hide" ng-click="listCardCtrl.openUpdateItem(item)">{{item.value.title}}</span>
+        <span class="list-item spisoknado-pointer spisoknado-list-item text-in-item" ng-show="!item.hide" ng-click="listCardCtrl.openUpdateItem(item)">{{item.value.title}}</span>
         <form ng-submit="listCardCtrl.updateFrontItem(item)" ng-show="item.hide">
           <md-input-container class="spisoknado-input-container">
               <input ng-model="item.value.title" id="item{{item.key}}" ng-blur="listCardCtrl.updateFrontItem(item)" md-autofocus>

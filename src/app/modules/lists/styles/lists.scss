@@ -44,3 +44,15 @@
 .spisoknado-main-content {
   max-width: 600px;
 }
+.item-block {
+  margin-bottom: 5px;
+  padding: 0 10px 0 0;
+
+  md-checkbox.checkbox-in-item {
+    margin-bottom: 4px;
+  }
+
+  span.text-in-item {
+    margin-bottom: 4px;
+  }
+}
