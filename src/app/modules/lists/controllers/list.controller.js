@@ -22,6 +22,11 @@ class ListController {
       data: new Date(),
       item: ""
     };
+    this.showRemove = false;
+    this.countMas = [];
+    for(let i = 1; i<101; i++) {
+      this.countMas.push(i);
+    }
 
     if(this.email!='' && this.kod!=''){
       this.checkListByShareEmail();
@@ -186,13 +191,17 @@ class ListController {
     });
   }
 
-  updateTitleItem(item) {
-    this._listsService.updateTitleItem(this.listObject.id, item);
+  updateFrontItem(item) {
+    this._listsService.updateFrontItem(this.listObject.id, item);
     item.hide = false;
+    console.log(item);
+    console.log(this.listObject);
+    this.listObject.items[findIndex(this.listObject.items, o => o.key === item.key )] = item;
+    console.log(this.listObject);
   }
 
   getSumNotComplete() {
-    if(!this.listObject.items && !this.listObject.items.length) {
+    if(!this.listObject.items || !this.listObject.items.length) {
       return 0;
     }
     let sum = 0;
@@ -205,7 +214,7 @@ class ListController {
   }
 
   getSumComplete() {
-    if(!this.listObject.items && !this.listObject.items.length) {
+    if(!this.listObject.items || !this.listObject.items.length) {
       return 0;
     }
     let sum = 0;
@@ -218,7 +227,7 @@ class ListController {
   }
 
   getAllSum() {
-    if(!this.listObject.items && !this.listObject.items.length) {
+    if(!this.listObject.items || !this.listObject.items.length) {
       return 0;
     }
     let sum = 0;

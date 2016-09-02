@@ -168,10 +168,13 @@ class ListsService {
       return ref.once('value');
   }
 
-  updateTitleItem(listId, item) {
+  updateFrontItem(listId, item) {
     let ref = firebase.database().ref().child('items/' + item.key);
     ref.update({
-      title: item.value.title
+      title: item.value.title,
+      count: item.value.count,
+      weight: item.value.weight,
+      complete: item.value.complete
     });
     this.writeChangeToList(listId, item.key, "update");
   }

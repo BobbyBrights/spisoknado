@@ -3,25 +3,36 @@
     <h3 class="md-headline">{{listCardCtrl.listObject.title}}</h3>
 
     <div layout="column">
-      Сумма не купленного: {{listCardCtrl.getSumNotComplete()}}  <br>
-      Сумма купленного: {{listCardCtrl.getSumComplete()}}  <br>
-      Общая сумма: {{listCardCtrl.getAllSum()}}
+      Сумма не купленного: {{listCardCtrl.getSumNotComplete() ? listCardCtrl.getSumNotComplete() : '0'}}  <br>
+      Сумма купленного: {{listCardCtrl.getSumComplete() ? listCardCtrl.getSumComplete() : '0'}}  <br>
+      Общая сумма: {{listCardCtrl.getAllSum() ? listCardCtrl.getAllSum() : '0'}}
+    </div>
+
+    <div layout="row">
+      <span ng-click="listCardCtrl.showRemove = true" ng-show="!listCardCtrl.showRemove">Режим удаления</span>
+      <span ng-click="listCardCtrl.showRemove = false" ng-show="listCardCtrl.showRemove">Скрыть удаление</span>
+      <span flex></span>
     </div>
 
     <div layout="column">
       <div ng-repeat="item in listCardCtrl.listObject.items" layout="row">
         <span class="list-item spisoknado-pointer spisoknado-list-item" ng-show="!item.hide" ng-click="listCardCtrl.openUpdateItem(item)">{{item.value.title}}</span>
-        <form ng-submit="listCardCtrl.updateTitleItem(item)" ng-show="item.hide">
+        <form ng-submit="listCardCtrl.updateFrontItem(item)" ng-show="item.hide">
           <md-input-container class="spisoknado-input-container">
               <input ng-model="item.value.title" id="item{{item.key}}" ng-blur="listCardCtrl.updateTitleItem(item)" md-autofocus>
           </md-input-container>
           <md-button class="md-raised md-primary spisoknado-hide" type="submit"></md-button>
         </form>
         <span flex></span>
-        <md-input-container class="spisoknado-input-container spisoknado-input-container-short">
-            <input ng-model="item.value.weight" id="item-weight-{{item.key}}" type="number">
+        <md-input-container class="spisoknado-input-container spisoknado-input-container-short" flex="10">
+            <input ng-model="item.value.weight" id="item-weight-{{item.key}}" type="number" min="0" ng-blur="listCardCtrl.updateFrontItem(item)">
         </md-input-container>
-        <md-button class="md-icon-button" ng-click="listCardCtrl.removeItem(item.key)">
+        <md-input-container class="spisoknado-input-container spisoknado-input-container-short" flex="10">
+            <md-select ng-model="item.value.count" ng-blur="listCardCtrl.updateFrontItem(item)">
+                <md-option ng-value="item" ng-repeat="item in listCardCtrl.countMas">{{ item }}</md-option>
+            </md-select>
+        </md-input-container>
+        <md-button class="md-icon-button" ng-click="listCardCtrl.removeItem(item.key)" ng-show="listCardCtrl.showRemove">
           <md-tooltip>Удалить</md-tooltip>
           <md-icon>delete_forever</md-icon>
         </md-button>
