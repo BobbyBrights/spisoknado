@@ -114,6 +114,9 @@ class ListsService {
       let updates = {};
       updates[''+newPostKey] = {};
       updates[''+newPostKey].title = itemTitle;
+      updates[''+newPostKey].count = 1;
+      updates[''+newPostKey].weight = 0;
+      updates[''+newPostKey].complete = false;
       firebase.database().ref().child('items').update(updates);
       let newPostKey1 = firebase.database().ref().child('lists/' + listId + '/items').push().key;
       updates = {};

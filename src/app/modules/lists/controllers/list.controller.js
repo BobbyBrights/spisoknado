@@ -191,6 +191,43 @@ class ListController {
     item.hide = false;
   }
 
+  getSumNotComplete() {
+    if(!this.listObject.items && !this.listObject.items.length) {
+      return 0;
+    }
+    let sum = 0;
+    this.listObject.items.forEach(it => {
+      if(!it.complete) {
+        sum += it.weight*it.count;
+      }
+    });
+    return sum;
+  }
+
+  getSumComplete() {
+    if(!this.listObject.items && !this.listObject.items.length) {
+      return 0;
+    }
+    let sum = 0;
+    this.listObject.items.forEach(it => {
+      if(it.complete) {
+        sum += it.weight*it.count;
+      }
+    });
+    return sum;
+  }
+
+  getAllSum() {
+    if(!this.listObject.items && !this.listObject.items.length) {
+      return 0;
+    }
+    let sum = 0;
+    this.listObject.items.forEach(it => {
+        sum += it.weight*it.count;
+    });
+    return sum;
+  }
+
 }
 
 ListController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'notifyService', '$scope', 'listsService', 'listId', '$state', 'email', 'kod'];

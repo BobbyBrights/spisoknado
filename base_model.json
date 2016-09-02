@@ -43,7 +43,10 @@
                 "parent": "$uid_item",
                 "childs": {
                     "$uid": "$uid_item"
-                }
+                },
+                "count": 1,
+                "weight": 1,
+                "complete": false
             }
         }
     }

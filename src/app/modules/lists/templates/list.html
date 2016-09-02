@@ -3,6 +3,12 @@
     <h3 class="md-headline">{{listCardCtrl.listObject.title}}</h3>
 
     <div layout="column">
+      Сумма не купленного: {{listCardCtrl.getSumNotComplete()}}  <br>
+      Сумма купленного: {{listCardCtrl.getSumComplete()}}  <br>
+      Общая сумма: {{listCardCtrl.getAllSum()}}
+    </div>
+
+    <div layout="column">
       <div ng-repeat="item in listCardCtrl.listObject.items" layout="row">
         <span class="list-item spisoknado-pointer spisoknado-list-item" ng-show="!item.hide" ng-click="listCardCtrl.openUpdateItem(item)">{{item.value.title}}</span>
         <form ng-submit="listCardCtrl.updateTitleItem(item)" ng-show="item.hide">
@@ -12,6 +18,9 @@
           <md-button class="md-raised md-primary spisoknado-hide" type="submit"></md-button>
         </form>
         <span flex></span>
+        <md-input-container class="spisoknado-input-container spisoknado-input-container-short">
+            <input ng-model="item.value.weight" id="item-weight-{{item.key}}" type="number">
+        </md-input-container>
         <md-button class="md-icon-button" ng-click="listCardCtrl.removeItem(item.key)">
           <md-tooltip>Удалить</md-tooltip>
           <md-icon>delete_forever</md-icon>
