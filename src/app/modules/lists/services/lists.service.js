@@ -92,8 +92,8 @@ class ListsService {
       shareEmail.forEach((item) => {
         this._authService.getUserByEmail(item)
         .then((data) => {
-          if(data.A.B!=undefined){
-            _this.writeShareUser(newPostKey, data.A.B);
+          if(data.val()){
+            _this.writeShareUser(newPostKey, data.val());
           }else{
             _this.writeShareEmail(newPostKey, item);
           }

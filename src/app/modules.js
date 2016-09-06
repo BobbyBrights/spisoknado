@@ -17,6 +17,7 @@ angular.module('spisoknado.main', ['core']);
 angular.module('spisoknado.global', ['core']);
 angular.module('spisoknado.lists', ['core']);
 angular.module('spisoknado.auth', ['core']);
+angular.module('spisoknado.friends', ['core']);
 
 
 angular.module('core')
@@ -27,7 +28,8 @@ angular.module('spisoknado', [
   'spisoknado.main',
   'spisoknado.global',
   'spisoknado.lists',
-  'spisoknado.auth'
+  'spisoknado.auth',
+  'spisoknado.friends'
 ])
   .run(function ($state) {
     $state.go("app");

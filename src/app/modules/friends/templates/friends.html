@@ -1,0 +1,48 @@
+<md-content class="friends-page">
+  <section>
+    <md-button class="md-primary" ng-click="friends.openCreateFriend()">создать</md-button>
+
+
+    <div>
+      <table ng-show="friends.myFriends.length">
+        <thead>
+          <tr>
+            <th>Имя</th>
+            <th>E-mail</th>
+            <th>Реальный юзер</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="friend in friends.myFriends">
+            <td>{{friend.name}}</td>
+            <td>{{friend.email}}</td>
+            <td>{{friend.user ? 'да' : 'нет'}}</td>
+            <td>
+               <md-menu>
+                    <md-button class="md-icon-button menu-button" ng-click="$mdOpenMenu($event)">
+                        <md-icon>more_vert</md-icon>
+                    </md-button>
+                    <md-menu-content width="4">
+                        <md-menu-item>
+                            <md-button ng-click="friends.openModalEdit(friend)">
+                                <md-icon>edit</md-icon>
+                                Редактировать
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="friends.removeFriend(friend)">
+                                <md-icon>delete</md-icon>
+                                Удалить
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+</md-content>

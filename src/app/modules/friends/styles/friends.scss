@@ -1,0 +1,21 @@
+.friends-page {
+  padding: 20px;
+  table {
+    tr {
+      border: 1px solid black;
+      th, td {
+        padding: 5px;
+      }
+
+      md-menu md-icon {
+          display: none;
+      }
+
+      &:hover {
+          md-menu md-icon {
+              display: block;
+          }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<md-dialog flex="40" flex-md="50" flex-sm="80" flex-xs="95">
+    <form ng-submit="editCtrl.doCreate()" name="formCreate">
+        <md-dialog-content>
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2 class="modal-title">Редактировать данные друга</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="Close" ng-click="editCtrl.cancel()">
+                        <md-icon>clear</md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <section class="md-dialog-content">
+                    <section layout="column" flex>
+                        <md-input-container flex>
+                            <label>Имя *</label>
+                            <input ng-model="editCtrl.friend.name" ng-required="true">
+                        </md-input-container>
+                    </section>
+                    <section layout="column" flex>
+                        <md-input-container flex>
+                            <label>E-mail *</label>
+                            <input ng-model="editCtrl.friend.email" ng-required="true">
+                        </md-input-container>
+                    </section>
+            </section>
+        </md-dialog-content>
+        <md-dialog-actions class="md-hue-2">
+            <md-button ng-click="editCtrl.cancel()">Отмена</md-button>
+            <md-button class="md-raised md-primary" type="submit"
+                       ng-disabled="formCreate.$invalid">
+                Создать
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

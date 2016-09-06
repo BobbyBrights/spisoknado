@@ -54,7 +54,8 @@ class AuthService {
             newUser[user.uid+""] = {
                 "email": email,
                 "lists": "",
-                "share_lists": ""
+                "share_lists": "",
+                "friends_email": ""
             };
             firebase.database().ref('users').update(newUser);
             var newEmail = {};
@@ -82,7 +83,7 @@ class AuthService {
     refactorEmail(email) {
       email = email.replace(/\@/g,"_at_");
       email = email.replace(/\./g,"_pp_");
-      return email;
+      return email+"";
     }
 
     getUserByEmail(email) {

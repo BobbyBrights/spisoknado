@@ -41,6 +41,10 @@ class MainController {
         this._$state.go("lists.list");
     }
 
+    myFriends() {
+        this._$state.go("friends.list");
+    }
+
     createList() {
         this._$mdDialog.show({
             clickOutsideToClose: true,
