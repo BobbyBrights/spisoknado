@@ -90,12 +90,12 @@ class ListsService {
 
       var _this = this;
       shareEmail.forEach((item) => {
-        this._authService.getUserByEmail(item)
+        this._authService.getUserByEmail(item.email)
         .then((data) => {
           if(data.val()){
             _this.writeShareUser(newPostKey, data.val());
           }else{
-            _this.writeShareEmail(newPostKey, item);
+            _this.writeShareEmail(newPostKey, item.email);
           }
         })
       });

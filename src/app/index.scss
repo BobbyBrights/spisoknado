@@ -10,3 +10,9 @@
 .global-main-div {
   overflow-x: hidden;
 }
+
+.create-list-input {
+  .md-chips .md-chip-input-container {
+    width: 100%;
+  }
+}

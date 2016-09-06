@@ -20,25 +20,26 @@
             </md-input-container>
           </div>
 
-          <div layout="column">
+          <div layout="column" class="create-list-input">
               <h3>кому расшарить</h3>
-              <form ng-repeat="email in con.shareEmail">
-                  <div layout="row">
-                      <span flex ng-click="con.removeEmail(email)">{{email}}</span>
-                      <md-button class="md-icon-button" ng-click="con.removeEmail(email)">-</md-button>
-                  </div>
-              </form>
-              <form ng-submit="con.addShareEmail()">
-                  <div layout="row">
-                      <md-input-container flex>
-                          <label>Email*</label>
-                          <input type="text" ng-model="con.newShareEmail" />
-                      </md-input-container>
-                      <md-button ng-click="con.addShareEmail()">+</md-button>
-                      <input type="submit" ng-show="false" />
-                  </div>
-              </form>
+            <md-chips ng-model="con.shareEmail" md-autocomplete-snap
+                md-transform-chip="con.transformChip($chip)">
+              <md-autocomplete flex
+                  md-selected-item="con.selectedItem"
+                  md-items="item in con.myFriends"
+                  md-item-text="item.email"
+                  placeholder="Введите email и нажмите enter">
+                <span md-highlight-text="con.searchText">{{item.name}} - {{item.email}}</span>
+              </md-autocomplete>
+              <md-chip-template>
+                <span>
+                  <strong>{{$chip.name}}</strong>
+                  <em>({{$chip.email}})</em>
+                </span>
+              </md-chip-template>
+            </md-chips>
           </div>
+
 
           <md-button ng-click="con.create()">Create List</md-button>
         </md-content>

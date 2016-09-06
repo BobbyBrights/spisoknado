@@ -2,18 +2,29 @@
  * Created by gr on 10.05.16.
  */
 class ListAddModalController {
-    constructor($mdDialog, progressService, notifyService, $state, listsService) {
+    constructor($mdDialog, progressService, notifyService, $state, listsService, friendsService) {
         this._$mdDialog = $mdDialog;
         this._listsService = listsService;
         this._progressService = progressService;
         this._$state = $state;
         this._notifyService = notifyService;
+        this._friendsService = friendsService;
         this.loadingFlag = false;
+        this.selectedItem = null;
+        this.searchText = null;
         this.list = {
             title: ""
         };
+        this.myFriends = [];
         this.shareEmail = [];
         this.newShareEmail = '';
+
+        this._friendsService.getMyFriendsListOnce()
+          .then(res => {
+            for(let x in res.val()){
+              this.myFriends.push(res.val()[x]);
+            }
+          })
     }
 
     /**
@@ -35,14 +46,6 @@ class ListAddModalController {
           });
     }
 
-    addShareEmail() {
-      if(this.newShareEmail==null || this.newShareEmail===undefined || this.newShareEmail==''){
-        return;
-      }
-      this.shareEmail.push(this.newShareEmail);
-      this.newShareEmail = '';
-    }
-
     removeEmail(email) {
       this.shareEmail.forEach((item, i) => {
         if(item==email){
@@ -51,11 +54,19 @@ class ListAddModalController {
         }
       })
     }
+
+    transformChip(chip) {
+      if (angular.isObject(chip)) {
+        return chip;
+      }
+
+      return { name: chip, email: chip }
+    }
 }
 
 
 ListAddModalController.$inject = ['$mdDialog', 'progressService',
-    'notifyService', '$state', 'listsService'
+    'notifyService', '$state', 'listsService', 'friendsService'
 ];
 
 export {

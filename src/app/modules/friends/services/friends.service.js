@@ -14,6 +14,10 @@ class FriendsService {
         return firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/friends_email');
   }
 
+  getMyFriendsListOnce() {
+        return firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/friends_email').once('value');
+  }
+
   createFriend(name, email) {
       this._authService.getUserByEmail(email)
         .then(res => {
