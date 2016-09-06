@@ -31,9 +31,22 @@
   }
 }
 
-.spisoknado-input-container-short {
+md-input-container.spisoknado-input-container-short {
   min-width: 40px;
-  margin: 0 2px;
+  margin: 0 4px;
+}
+
+md-input-container.spisoknado-input-container-short-count {
+  min-width: 0;
+  width: 20px;
+
+  md-select {
+    width: 55px;
+
+    md-select-value {
+      min-width: 20px;
+    }
+  }
 }
 
 .spisoknado-list-item {
