@@ -124,7 +124,6 @@ class ListController {
       .then((res) => {
         this.listObject = res.val();
         this.listObject.id = res.key;
-        this._$rootScope.$apply();
         this.loadParentItems();
       });
   }
@@ -132,11 +131,19 @@ class ListController {
   loadParentItems() {
     let items = this.listObject.items;
     this.listObject.items = [];
+    let length = 0;
+    for(let x in items){
+      length++;
+    }
+    let loadItem = 0;
     for(let x in items){
       this._listsService.getItemById(items[x])
         .then((res) => {
+          loadItem++;
           this.listObject.items.push({value: res.val(), key: res.key, hide: false});
-          this._$rootScope.$apply();
+          if(loadItem >= length){
+            this._$rootScope.$apply();
+          }
         });
     }
   }

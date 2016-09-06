@@ -1,23 +1,23 @@
 <md-toolbar class="md-hue-2">
   <div class="md-toolbar-tools">
     <span flex></span>
-    <md-button class="md-raised" ng-click="mainCtrl.login()" ng-show="!mainCtrl.user">
+    <md-button class="md-raised" ng-click="mainCtrl.login()" ng-show="!mainCtrl.user" aria-label="spisoknado">
       Войти
     </md-button>
-    <md-button class="md-raised" ng-click="mainCtrl.myList()" ng-show="mainCtrl.user">
+    <md-button class="md-raised" ng-click="mainCtrl.myList()" ng-show="mainCtrl.user" aria-label="spisoknado">
       Мои списки
     </md-button>
-    <md-button class="md-raised" ng-click="mainCtrl.createList()" ng-show="mainCtrl.user">
+    <md-button class="md-raised" ng-click="mainCtrl.createList()" ng-show="mainCtrl.user" aria-label="spisoknado">
       Создать список
     </md-button>
     <!--user drop-down-->
     <md-menu>
-      <md-button ng-click="$mdOpenMenu($event)" ng-show="mainCtrl.user">
+      <md-button ng-click="$mdOpenMenu($event)" ng-show="mainCtrl.user" aria-label="spisoknado">
         {{mainCtrl.user.email}}
       </md-button>
       <md-menu-content width="4">
         <md-menu-item>
-          <md-button ng-click="mainCtrl.logout()">
+          <md-button ng-click="mainCtrl.logout()" aria-label="spisoknado">
             Exit
           </md-button>
         </md-menu-item>
