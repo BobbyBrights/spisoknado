@@ -1,4 +1,4 @@
-<md-content class="friends-page">
+<md-content class="friends-page spisoknado-main-content">
   <section>
     <md-button class="md-primary" ng-click="friends.openCreateFriend()">создать</md-button>
 
@@ -18,7 +18,8 @@
             <td>{{friend.name}}</td>
             <td>{{friend.email}}</td>
             <td>{{friend.user ? 'да' : 'нет'}}</td>
-            <td>
+            <td layout="row">
+              <span flex></span>
                <md-menu>
                     <md-button class="md-icon-button menu-button" ng-click="$mdOpenMenu($event)">
                         <md-icon>more_vert</md-icon>

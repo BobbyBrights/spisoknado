@@ -6,16 +6,6 @@
     &:hover {
       background-color: $table-bg-hover;
     }
-
-    md-menu md-icon {
-      display: none;
-    }
-
-    &:hover {
-      md-menu md-icon {
-        display: block;
-      }
-    }
   }
 }
 
