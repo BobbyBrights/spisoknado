@@ -69,7 +69,7 @@ class ListEditModalController {
         this.loadingFlag = true;
         let create = differenceBy(this.shareEmail, this.startShareEmail, 'email');
         let remove = differenceBy(this.startShareEmail, this.shareEmail, 'email');
-        this._listsService.updateList(this.list.title, create, remove)
+        this._listsService.updateList(this.list, create, remove)
           .then((data) => {
               this.closeDialog();
           })

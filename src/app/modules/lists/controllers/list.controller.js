@@ -57,6 +57,10 @@ class ListController {
             }
             if(data.val().action == "remove"){
               _this.removeItemFront(data.val().item);
+              return;
+            }
+            if(data.val().action == "update_info"){
+              this._$state.reload();
             }
           }
     });

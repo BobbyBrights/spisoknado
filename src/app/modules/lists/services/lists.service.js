@@ -77,8 +77,65 @@ class ListsService {
           })
   }
 
-  updateList(title, createEmail, removeEmail) {
+  removeShareEmail(key, email) {
+    this._authService.getUserByEmail(email)
+      .then((data) => {
+        let idUser = data.val();
+        if(idUser){
+          this.removeShareListByUser(key, idUser);
+        }else{
+          firebase.database().ref().child('lists/'+key+'/share_email').once('value')
+            .then(res => {
+              for(let x in res.val()) {
+                if(res.val()[x] === email){
+                  firebase.database().ref().child('lists/'+idList+'/share_email/'+x).remove();
+                  break;
+                }
+              }
+            });
+        }
+      })
+  }
 
+  removeShareListByUser(idList, idUser){
+    firebase.database().ref().child('lists/'+idList+'/share_users').once('value')
+      .then(res => {
+        for(let x in res.val()) {
+          if(res.val()[x] === idUser){
+            firebase.database().ref().child('lists/'+idList+'/share_users/'+x).remove();
+            break;
+          }
+        }
+      });
+    firebase.database().ref().child('users/'+idUser+'/share_lists').once('value')
+      .then(res => {
+        for(let x in res.val()) {
+          if(res.val()[x] === idList){
+            firebase.database().ref().child('users/'+idUser+'/share_lists'+x).remove();
+            break;
+          }
+        }
+      });
+  }
+
+  updateList(list, createEmail, removeEmail) {
+    let _this = this;
+    removeEmail.forEach(item => {
+      _this.removeShareEmail(list.key, item.email);
+    });
+    createEmail.forEach((item) => {
+      this._authService.getUserByEmail(item.email)
+        .then((data) => {
+          if(data.val()){
+            _this.writeShareUser(list.key, data.val());
+          }else{
+            _this.writeShareEmail(list.key, item.email);
+          }
+        })
+    });
+    firebase.database().ref().child('lists/'+list.key+'/title').update(list.title);
+    this.writeChangeToList(list.key, null, "update_info");
+    return firebase.database().ref().child('lists/'+list.key).once('value');
   }
 
   createList(list, shareEmail) {
