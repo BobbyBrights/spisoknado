@@ -90,6 +90,10 @@ class AuthService {
       var refactoringEmail = this.refactorEmail(email);
       return firebase.database().ref('emails/' + refactoringEmail).once('value');
     }
+
+    getUserByUserId(id) {
+      return firebase.database().ref('users/' + id).once('value');
+    }
 }
 
 AuthService.$inject = ['$q', '$state', 'progressService', 'notifyService'];

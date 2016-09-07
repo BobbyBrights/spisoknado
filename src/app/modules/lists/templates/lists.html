@@ -1,10 +1,31 @@
-<md-tabs md-border-bottom md-dynamic-height>
+<md-tabs md-border-bottom md-dynamic-height class="spisoknado-main-content">
     <md-tab label="Мои списки">
         <md-card class="admin-card" layout="column">
             <md-card-content layout="column" layout-align="space-between">
                 <table class="table table-hover clickable no-padding table-text-align-top">
                   <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myLists" >
                     <td>{{list.title}}</td>
+                    <td layout="row"><span flex></span>
+                      <md-menu>
+                        <md-button class="md-icon-button menu-button" ng-click="$mdOpenMenu($event)">
+                          <md-icon>more_vert</md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                          <md-menu-item>
+                            <md-button ng-click="lists.openModalEdit(list)">
+                              <md-icon>edit</md-icon>
+                              Редактировать
+                            </md-button>
+                          </md-menu-item>
+                          <md-menu-item>
+                            <md-button ng-click="lists.removeList(list)">
+                              <md-icon>delete</md-icon>
+                              Удалить
+                            </md-button>
+                          </md-menu-item>
+                        </md-menu-content>
+                      </md-menu>
+                    </td>
                   </tr>
                 </table>
             </md-card-content>

@@ -1,3 +1,5 @@
+import {ListEditModalController} from '../modal/edit/listEdit.controller';
+
 class ListsController {
   constructor($rootScope, $mdDialog, progressService, notifyService, $scope, listsService, $state) {
     this._$mdDialog = $mdDialog;
@@ -99,6 +101,24 @@ class ListsController {
 
   goToList(list) {
       this._$state.go('lists.listCard',{id: list.key});
+  }
+
+  openModalEdit(list) {
+    this._$mdDialog.show({
+      templateUrl: 'app/modules/lists/modal/edit/listEdit.html',
+      controller: ListEditModalController,
+      controllerAs: 'editCtrl',
+      locals: {
+        list: list
+      }
+    })
+      .then((res) => {
+
+      });
+  }
+
+  removeList(list) {
+
   }
 
 }

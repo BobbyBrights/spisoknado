@@ -179,6 +179,8 @@ class ListsService {
     this.writeChangeToList(listId, item.key, "update");
   }
 
+
+
 }
 ListsService.$inject = ['$resource', 'progressService', 'notifyService', '$state', '$rootScope', 'authService', 'appSettings'];
 

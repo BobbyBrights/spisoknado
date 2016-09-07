@@ -1,0 +1,47 @@
+<md-dialog class="oni-transperent-dialog" flex="50">
+    <md-dialog-content>
+
+      <div ng-show="editCtrl.loadingFlag">
+        <div layout="column">
+          <div class="content" layout="column" layout-align="center center">
+            <md-progress-circular md-mode="indeterminate" flex></md-progress-circular>
+          </div>
+        </div>
+      </div>
+
+      <div ng-show="!editCtrl.loadingFlag">
+        <md-content md-whiteframe="3" layout-padding>
+          <h3>название списка</h3>
+          <div layout="row">
+            <md-input-container flex>
+              <label>Title</label>
+              <input type="text" ng-model="editCtrl.list.title">
+            </md-input-container>
+          </div>
+
+          <div layout="column" class="create-list-input">
+              <h3>Расшарено</h3>
+            <md-chips ng-model="editCtrl.shareEmail" md-autocomplete-snap
+                md-transform-chip="editCtrl.transformChip($chip)">
+              <md-autocomplete flex
+                  md-selected-item="editCtrl.selectedItem"
+                  md-items="item in editCtrl.myFriends"
+                  md-item-text="item.email"
+                  placeholder="Введите email и нажмите enter">
+                <span md-highlight-text="editCtrl.searchText">{{item.name}} - {{item.email}}</span>
+              </md-autocomplete>
+              <md-chip-template>
+                <span>
+                  <strong>{{$chip.name}}</strong>
+                  <em>({{$chip.email}})</em>
+                </span>
+              </md-chip-template>
+            </md-chips>
+          </div>
+
+
+          <md-button ng-click="editCtrl.edit()">Сохранить</md-button>
+        </md-content>
+      </div>
+    </md-dialog-content>
+</md-dialog>
