@@ -1,3 +1,4 @@
+import {findIndex, differenceBy} from 'lodash';
 /**
  * Created by gr on 10.05.16.
  */
@@ -61,6 +62,24 @@ class ListAddModalController {
       }
 
       return { name: chip, email: chip }
+    }
+
+    myFriendsWithoutChange() {
+      return differenceBy(this.myFriends, this.shareEmail, 'email');
+    }
+
+    checkoutLastChip() {
+      let lastEmail = this.shareEmail[this.shareEmail.length-1].email;
+      let findIndex = -1;
+      for(let i = 0; i<this.shareEmail.length-1; i++) {
+        if(this.shareEmail[i].email === lastEmail) {
+          findIndex = i;
+          break;
+        }
+      }
+      if(findIndex != -1) {
+        this.shareEmail.splice(findIndex,1);
+      }
     }
 }
 

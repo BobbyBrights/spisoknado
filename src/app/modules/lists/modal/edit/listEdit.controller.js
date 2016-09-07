@@ -1,4 +1,4 @@
-import {findIndex} from 'lodash';
+import {findIndex, differenceBy} from 'lodash';
 
 class ListEditModalController {
     constructor($mdDialog, progressService, authService, notifyService, $state, listsService, friendsService, list) {
@@ -14,6 +14,7 @@ class ListEditModalController {
         this.searchText = null;
         this.list = list;
         this.shareEmail = [];
+        this.startShareEmail = [];
 
         this.myFriends = [];
         this.newShareEmail = '';
@@ -32,12 +33,12 @@ class ListEditModalController {
       for(let x in this.list.share_email) {
         let email = this.list.share_email[x];
         let index = findIndex(this.myFriends, item => item.email === email);
-        console.log(email,index);
         if(index != -1) {
-          this.shareEmail.push({name: this.myFriends[index].name, email: email});
+          this.shareEmail.push({name: this.myFriends[index].name, email: email, user: this.myFriends[index].user});
         }else{
-          this.shareEmail.push({name: email, email: email});
+          this.shareEmail.push({name: email, email: email, user: false});
         }
+        this.startShareEmail = angular.copy(this.shareEmail);
       }
     }
 
@@ -48,10 +49,11 @@ class ListEditModalController {
             let email = res.val().email;
             let index = findIndex(this.myFriends, item => item.email === email);
             if(index != -1) {
-              this.shareEmail.push({name: this.myFriends[index].name, email: email});
+              this.shareEmail.push({name: this.myFriends[index].name, email: email, user: this.myFriends[index].user});
             }else{
-              this.shareEmail.push({name: email, email: email});
+              this.shareEmail.push({name: email, email: email, user: false});
             }
+            this.startShareEmail = angular.copy(this.shareEmail);
           })
       }
     }
@@ -65,7 +67,9 @@ class ListEditModalController {
 
     edit() {
         this.loadingFlag = true;
-        this._listsService.createList(this.list, this.shareEmail)
+        let create = differenceBy(this.shareEmail, this.startShareEmail, 'email');
+        let remove = differenceBy(this.startShareEmail, this.shareEmail, 'email');
+        this._listsService.updateList(this.list.title, create, remove)
           .then((data) => {
               this.closeDialog();
           })
@@ -90,6 +94,24 @@ class ListEditModalController {
       }
 
       return { name: chip, email: chip }
+    }
+
+    myFriendsWithoutChange() {
+      return differenceBy(this.myFriends, this.shareEmail, 'email');
+    }
+
+    checkoutLastChip() {
+      let lastEmail = this.shareEmail[this.shareEmail.length-1].email;
+      let findIndex = -1;
+      for(let i = 0; i<this.shareEmail.length-1; i++) {
+        if(this.shareEmail[i].email === lastEmail) {
+          findIndex = i;
+          break;
+        }
+      }
+      if(findIndex != -1) {
+        this.shareEmail.splice(this.shareEmail.length-1,1);
+      }
     }
 }
 

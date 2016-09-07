@@ -23,10 +23,11 @@
           <div layout="column" class="create-list-input">
               <h3>кому расшарить</h3>
             <md-chips ng-model="con.shareEmail" md-autocomplete-snap
-                md-transform-chip="con.transformChip($chip)">
+                md-transform-chip="con.transformChip($chip)"
+                md-on-add="con.checkoutLastChip()">
               <md-autocomplete flex
                   md-selected-item="con.selectedItem"
-                  md-items="item in con.myFriends"
+                  md-items="item in con.myFriendsWithoutChange()"
                   md-item-text="item.email"
                   placeholder="Введите email и нажмите enter">
                 <span md-highlight-text="con.searchText">{{item.name}} - {{item.email}}</span>

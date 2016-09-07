@@ -77,6 +77,10 @@ class ListsService {
           })
   }
 
+  updateList(title, createEmail, removeEmail) {
+
+  }
+
   createList(list, shareEmail) {
       var newPostKey = firebase.database().ref().child('lists').push().key;
       var updates = {};

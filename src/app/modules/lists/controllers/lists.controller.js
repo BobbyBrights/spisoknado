@@ -108,6 +108,7 @@ class ListsController {
       templateUrl: 'app/modules/lists/modal/edit/listEdit.html',
       controller: ListEditModalController,
       controllerAs: 'editCtrl',
+      clickOutsideToClose:true,
       locals: {
         list: list
       }
