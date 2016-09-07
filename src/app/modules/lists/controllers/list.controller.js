@@ -64,6 +64,9 @@ class ListController {
             }
           }
     });
+    firebase.database().ref('lists/' + this.listId).on('child_removed', function(data) {
+      this._$state.go("lists.list");
+    });
   }
 
   checkPermission() {

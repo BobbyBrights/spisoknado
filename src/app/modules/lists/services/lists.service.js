@@ -64,7 +64,7 @@ class ListsService {
 
 
             for(let y in res.val().share_users){
-              firebase.database().ref('users/' + res.val().share_users[y] + '/share_lists').once('value')
+              firebase.database().ref('users/' + res.val().share_users[y].user_id + '/share_lists').once('value')
               .then((res) => {
                 for(let x in res.val()){
                   if(res.val()[x].key == uid) {
@@ -101,7 +101,7 @@ class ListsService {
     firebase.database().ref().child('lists/'+idList+'/share_users').once('value')
       .then(res => {
         for(let x in res.val()) {
-          if(res.val()[x] === idUser){
+          if(res.val()[x].user_id === idUser){
             firebase.database().ref().child('lists/'+idList+'/share_users/'+x).remove();
             break;
           }
@@ -127,14 +127,14 @@ class ListsService {
       this._authService.getUserByEmail(item.email)
         .then((data) => {
           if(data.val()){
-            _this.writeShareUser(list.key, data.val());
+            _this.writeShareUser(list.key, data.val(), item.email);
           }else{
             _this.writeShareEmail(list.key, item.email);
           }
         })
     });
-    firebase.database().ref().child('lists/'+list.key+'/title').update(list.title);
-    this.writeChangeToList(list.key, null, "update_info");
+    firebase.database().ref().child('lists/'+list.key+'/title').set(list.title+"");
+    this.writeChangeToList(list.key, "", "update_info");
     return firebase.database().ref().child('lists/'+list.key).once('value');
   }
 
@@ -154,7 +154,7 @@ class ListsService {
         this._authService.getUserByEmail(item.email)
         .then((data) => {
           if(data.val()){
-            _this.writeShareUser(newPostKey, data.val());
+            _this.writeShareUser(newPostKey, data.val(), item.email);
           }else{
             _this.writeShareEmail(newPostKey, item.email);
           }
@@ -187,10 +187,13 @@ class ListsService {
       return newPostKey;
   }
 
-  writeShareUser(newPostKey, shareUser){
+  writeShareUser(newPostKey, shareUser, email){
       let newPostKey1 = firebase.database().ref().child('lists/'+newPostKey+'/share_users').push().key;
       let updates = {};
-      updates[''+newPostKey1] = shareUser;
+      updates[''+newPostKey1] = {
+        user_id: shareUser,
+        email: email
+      };
       firebase.database().ref().child('lists/'+newPostKey+'/share_users').update(updates);
 
       let newPostKey2 = firebase.database().ref().child('users/'+ shareUser+'/share_lists').push().key;
@@ -238,6 +241,31 @@ class ListsService {
       complete: item.value.complete
     });
     this.writeChangeToList(listId, item.key, "update");
+  }
+
+  removeList(list) {
+    for(let x in list.share_email){
+      this.removeShareEmail(list.key, list.share_email[x]);
+    }
+    for(let x in list.share_users){
+      this.removeShareEmail(list.key, list.share_users[x].email);
+    }
+    firebase.database().ref().child('users/' + list.author + '/lists').once('value')
+      .then(res => {
+        for(let x in res.val()) {
+          if(res.val()[x].key === list.key) {
+            firebase.database().ref().child('users/' + list.author + '/lists/' + x).remove();
+            break;
+          }
+        }
+      });
+    firebase.database().ref().child('lists/' + list.key + '/items').once('value')
+      .then(res => {
+        for(let x in res.val()) {
+            firebase.database().ref().child('items/' + res.val()[x]).remove();
+        }
+      });
+    firebase.database().ref().child('lists/' + list.key).remove();
   }
 
 

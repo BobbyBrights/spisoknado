@@ -1,4 +1,5 @@
 import {ListEditModalController} from '../modal/edit/listEdit.controller';
+import {findIndex, remove} from 'lodash';
 
 class ListsController {
   constructor($rootScope, $mdDialog, progressService, notifyService, $scope, listsService, $state) {
@@ -113,13 +114,19 @@ class ListsController {
         list: list
       }
     })
-      .then((res) => {
-
-      });
   }
 
   removeList(list) {
+    let _confirm = this._$mdDialog.confirm()
+      .title('Удаление списка')
+      .textContent('Вы действительно хотите удалиль список?')
+      .ok('Удалить')
+      .cancel('Отмена');
 
+    this._$mdDialog.show(_confirm)
+      .then(() => {
+        this._listsService.removeList(list);
+      })
   }
 
 }

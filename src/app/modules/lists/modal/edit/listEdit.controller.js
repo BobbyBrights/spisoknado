@@ -1,8 +1,9 @@
 import {findIndex, differenceBy} from 'lodash';
 
 class ListEditModalController {
-    constructor($mdDialog, progressService, authService, notifyService, $state, listsService, friendsService, list) {
+    constructor($mdDialog, $rootScope, progressService, authService, notifyService, $state, listsService, friendsService, list) {
         this._$mdDialog = $mdDialog;
+        this._$rootScope = $rootScope;
         this._listsService = listsService;
         this._progressService = progressService;
         this._authService = authService;
@@ -44,9 +45,7 @@ class ListEditModalController {
 
     getEmailByShareUsers() {
       for(let x in this.list.share_users) {
-        this._authService.getUserByUserId(this.list.share_users[x])
-          .then(res => {
-            let email = res.val().email;
+            let email = this.list.share_users[x].email;
             let index = findIndex(this.myFriends, item => item.email === email);
             if(index != -1) {
               this.shareEmail.push({name: this.myFriends[index].name, email: email, user: this.myFriends[index].user});
@@ -54,7 +53,6 @@ class ListEditModalController {
               this.shareEmail.push({name: email, email: email, user: false});
             }
             this.startShareEmail = angular.copy(this.shareEmail);
-          })
       }
     }
 
@@ -70,7 +68,7 @@ class ListEditModalController {
         let create = differenceBy(this.shareEmail, this.startShareEmail, 'email');
         let remove = differenceBy(this.startShareEmail, this.shareEmail, 'email');
         this._listsService.updateList(this.list, create, remove)
-          .then((data) => {
+          .then(() => {
               this.closeDialog();
           })
           .catch((error) => {
@@ -116,7 +114,7 @@ class ListEditModalController {
 }
 
 
-ListEditModalController.$inject = ['$mdDialog', 'progressService', 'authService',
+ListEditModalController.$inject = ['$mdDialog', '$rootScope', 'progressService', 'authService',
     'notifyService', '$state', 'listsService', 'friendsService', 'list'
 ];
 
