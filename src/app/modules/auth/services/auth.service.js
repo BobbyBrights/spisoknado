@@ -1,8 +1,9 @@
 class AuthService {
-    constructor($q, $state, $resource, progressService, notifyService) {
+    constructor($q, $state, $stateParams, $resource, progressService, notifyService) {
         this._$q = $q;
         this._$state = $state;
         this._$resource = $resource;
+        this._$stateParams = $stateParams;
         this._progressService = progressService;
         this._notifyService = notifyService;
 
@@ -98,10 +99,7 @@ class AuthService {
             var newEmail = {};
             newEmail[_this.refactorEmail(email)+""] = user.uid;
             firebase.database().ref('emails').update(newEmail);
-            _this.sendConfirmEmail({email: email, code: code})
-              .finally(() => {
-                _this.logOut();
-              })
+            _this.sendConfirmEmail({email: email, code: code});
         });
     }
 
@@ -114,7 +112,11 @@ class AuthService {
         this._progressService.showCircular();
         firebase.auth().signOut().then(function() {
             _this._progressService.hideCircular();
-            _this._$state.go("login");
+            if(_this._$stateParams.email){
+              _this._$state.go("login",{email: _this._$stateParams.email, code: _this._$stateParams.code});
+            }else{
+              _this._$state.go("login");
+            }
         }, function(error) {
             _this._notifyService.error(error);
             _this._progressService.hideCircular();
@@ -137,7 +139,7 @@ class AuthService {
     }
 }
 
-AuthService.$inject = ['$q', '$state', '$resource', 'progressService', 'notifyService'];
+AuthService.$inject = ['$q', '$state', '$stateParams', '$resource', 'progressService', 'notifyService'];
 
 export {
     AuthService

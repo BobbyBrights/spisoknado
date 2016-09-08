@@ -1,8 +1,9 @@
 class MainController {
-    constructor($state, authService, $rootScope, $mdDialog, appSettings) {
+    constructor($state, authService, $rootScope, $stateParams, $mdDialog, appSettings) {
         this._$state = $state;
         this._$rootScope = $rootScope;
         this._authService = authService;
+        this._$stateParams = $stateParams;
         this._$mdDialog = $mdDialog;
         this._appSetting = appSettings;
         this.user = firebase.auth().currentUser;
@@ -10,20 +11,32 @@ class MainController {
         var _this = this;
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
-            CONSTANT_SPISOKNADO.user_uid = user.uid;
-            let interval_current_user = window.setInterval(function(){
-              if(firebase.auth().currentUser!=null){
-                _this.user = firebase.auth().currentUser;
-                _this._$rootScope.$apply();
-                if($state.current.name == "app") {
-                  $state.go("lists.list");
+
+            firebase.database().ref('users/'+user.uid).once('value')
+              .then((res) => {
+                if(res.val().confirm){
+                  CONSTANT_SPISOKNADO.user_uid = user.uid;
+                  let interval_current_user = window.setInterval(function(){
+                    if(firebase.auth().currentUser!=null){
+                      _this.user = firebase.auth().currentUser;
+                      _this._$rootScope.$apply();
+                      if($state.current.name == "app") {
+                        $state.go("lists.list");
+                      }
+                      window.clearInterval(interval_current_user);
+                    }
+                  },15);
+                }else{
+                  _this._authService.logOut();
                 }
-                window.clearInterval(interval_current_user);
-              }
-            },15);
+              });
           } else {
             if($state.current.name!='lists.listCard') {
-              $state.go("login");
+              if(_this._$stateParams.email){
+                $state.go("login",{email: _this._$stateParams.email, code: _this._$stateParams.code});
+              }else{
+                $state.go("login");
+              }
             }
           }
         });
@@ -56,6 +69,6 @@ class MainController {
 
 }
 
-MainController.$inject = ['$state', 'authService', '$rootScope', '$mdDialog', 'appSettings'];
+MainController.$inject = ['$state', 'authService', '$rootScope', '$stateParams', '$mdDialog', 'appSettings'];
 
 export {MainController}
