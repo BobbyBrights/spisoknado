@@ -8,7 +8,7 @@ class AuthService {
 
         this._authResource = $resource(`url`, {}, {
           confirm_email: {
-            method: 'POST', url: 'php/confirm_email.php'
+            method: 'GET', url: 'php/confirm_email.php'
           }})
     }
 
@@ -30,8 +30,18 @@ class AuthService {
         this._progressService.showCircular();
         firebase.auth().signInWithEmailAndPassword(email, password)
             .then(function(){
-                _this._progressService.hideCircular();
-                _this._$state.go("app");
+                firebase.auth().onAuthStateChanged(function(user) {
+                  firebase.database().ref('users/'+user.uid).once('value')
+                    .then((res) => {
+                        if(res.val().confirm){
+                          _this._progressService.hideCircular();
+                          _this._$state.go("app");
+                        }else{
+                          _this._progressService.hideCircular();
+                          _this._notifyService.info("Для активации учётной записи, пройдите по ссылке, отправленной на указанный e-mail");
+                        }
+                      });
+                });
             })
             .catch(function(error) {
               _this._notifyService.error(error);
