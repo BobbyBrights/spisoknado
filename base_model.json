@@ -3,6 +3,8 @@
         "users": {
             "$uid_user": {
                 "email": "email",
+                "confirm": true,
+                "confirm_code": "code",
                 "lists": {
                     "$uid": {
                       "key": "$uid_list",
