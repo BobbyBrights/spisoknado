@@ -2,10 +2,11 @@ import {ListEditModalController} from '../modal/edit/listEdit.controller';
 import {findIndex, remove} from 'lodash';
 
 class ListsController {
-  constructor($rootScope, $mdDialog, progressService, notifyService, $scope, listsService, $state) {
+  constructor($rootScope, $mdDialog, progressService, notifyService, $scope, listsService, $state, authService) {
     this._$mdDialog = $mdDialog;
     this._progressService = progressService;
     this._$rootScope = $rootScope;
+    this._authService = authService;
     this._$scope = $scope;
     this._$state = $state;
     this._notifyService = notifyService;
@@ -13,6 +14,7 @@ class ListsController {
     this.myLists = [];
     this.myShareLists = [];
     let _this = this;
+    this._authService.createAuthToken();
     let interval_current_user = window.setInterval(function(){
       if(CONSTANT_SPISOKNADO.user_uid!=null){
         _this.createOn();
@@ -131,7 +133,7 @@ class ListsController {
 
 }
 
-ListsController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'notifyService', '$scope', 'listsService', '$state'];
+ListsController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'notifyService', '$scope', 'listsService', '$state', 'authService'];
 
 export {
   ListsController

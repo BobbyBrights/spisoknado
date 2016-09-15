@@ -1,12 +1,13 @@
 class AuthService {
-    constructor($q, $state, $stateParams, $resource, progressService, notifyService) {
+    constructor($q, $state, $rootScope, $stateParams, $resource, progressService, notifyService) {
         this._$q = $q;
         this._$state = $state;
         this._$resource = $resource;
+        this._$rootScope = $rootScope;
         this._$stateParams = $stateParams;
         this._progressService = progressService;
         this._notifyService = notifyService;
-
+        this.createUserId = null;
         this._authResource = $resource(`url`, {}, {
           confirm_email: {
             method: 'GET', url: 'php/confirm_email.php'
@@ -52,6 +53,8 @@ class AuthService {
 
     singUp(email, password) {
       var _this = this;
+      this.createUserId = null;
+              console.log("1")
       this._progressService.showCircular();
       return firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(function(data){
@@ -59,6 +62,7 @@ class AuthService {
           _this._progressService.hideCircular();
           firebase.auth().signInWithEmailAndPassword(email, password)
             .then(() => {
+              _this.createUserId = null;
               _this.createUserInBase(email, password);
             });
         })
@@ -85,18 +89,17 @@ class AuthService {
     createUserInBase(email, password) {
         let _this = this;
         firebase.auth().onAuthStateChanged(function(user) {
-        console.log(user)
             if(!user){
               return;
             }
-        console.log(user.uid)
             var newUser = {};
             let code = _this.createSecretCod();
             firebase.database().ref('users/'+user.uid).once('value')
               .then(data => {
-                if(data.val()){
+                if(_this.createUserId){
                   return;
                 }
+                _this.createUserId = user.uid;
                 newUser[user.uid+""] = {
                     "email": email,
                     "lists": "",
@@ -142,9 +145,38 @@ class AuthService {
     getUserByUserId(id) {
       return firebase.database().ref('users/' + id).once('value');
     }
+
+    createAuthToken() {
+      var _this = this;
+              firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+
+                  firebase.database().ref('users/'+user.uid).once('value')
+                    .then((res) => {
+                      if(res.val() && res.val().confirm){
+                        CONSTANT_SPISOKNADO.user_uid = user.uid;
+                        let interval_current_user = window.setInterval(function(){
+                          if(firebase.auth().currentUser!=null){
+                            _this.user = firebase.auth().currentUser;
+                            _this._$rootScope.$apply();
+                            if(_this._$state.current.name == "app") {
+                              _this._$state.go("lists.list");
+                            }
+                            window.clearInterval(interval_current_user);
+                          }
+                        },15);
+                      }else{
+                        _this.logOut();
+                      }
+                    });
+                } else {
+                      _this._$state.go("login");
+                }
+              });
+    }
 }
 
-AuthService.$inject = ['$q', '$state', '$stateParams', '$resource', 'progressService', 'notifyService'];
+AuthService.$inject = ['$q', '$state', '$rootScope', '$stateParams', '$resource', 'progressService', 'notifyService'];
 
 export {
     AuthService

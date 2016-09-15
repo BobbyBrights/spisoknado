@@ -32,5 +32,5 @@ angular.module('spisoknado', [
   'spisoknado.friends'
 ])
   .run(function ($state) {
-    $state.go("app");
+    //$state.go("app");
   });
