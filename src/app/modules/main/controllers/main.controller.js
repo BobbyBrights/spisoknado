@@ -8,7 +8,24 @@ class MainController {
         this._appSetting = appSettings;
         this._$window = $window;
         this.user = firebase.auth().currentUser;
-
+        var _this = this;
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            firebase.database().ref('users/'+user.uid).once('value')
+              .then((res) => {
+                if(res.val() && res.val().confirm){
+                  CONSTANT_SPISOKNADO.user_uid = user.uid;
+                  let interval_current_user = window.setInterval(function(){
+                    if(firebase.auth().currentUser!=null){
+                      _this.user = firebase.auth().currentUser;
+                      _this._$rootScope.$apply();
+                      window.clearInterval(interval_current_user);
+                    }
+                  },15);
+                }
+              });
+          }
+        });
     }
 
     logout() {

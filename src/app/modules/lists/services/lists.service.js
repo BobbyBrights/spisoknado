@@ -6,6 +6,13 @@ class ListsService {
     this._$state = $state;
     this._$rootScope = $rootScope;
     this._appSetting = appSettings;
+    this._listResource = $resource(`url`, {}, {
+              share_list_email: {
+                method: 'GET', url: 'php/share_list_email.php'
+              },
+              share_list_user: {
+                method: 'GET', url: 'php/share_list_user.php'
+              }})
   }
 
   getMyListsList() {
@@ -110,7 +117,7 @@ class ListsService {
     firebase.database().ref().child('users/'+idUser+'/share_lists').once('value')
       .then(res => {
         for(let x in res.val()) {
-          if(res.val()[x] === idList){
+          if(res.val()[x].key === idList){
             firebase.database().ref().child('users/'+idUser+'/share_lists'+x).remove();
             break;
           }
@@ -129,7 +136,7 @@ class ListsService {
           if(data.val()){
             _this.writeShareUser(list.key, data.val(), item.email);
           }else{
-            _this.writeShareEmail(list.key, item.email);
+            _this.writeShareEmail(list.key, item.email, list.secret_key);
           }
         })
     });
@@ -156,7 +163,7 @@ class ListsService {
           if(data.val()){
             _this.writeShareUser(newPostKey, data.val(), item.email);
           }else{
-            _this.writeShareEmail(newPostKey, item.email);
+            _this.writeShareEmail(newPostKey, item.email, updates[''+newPostKey].secret_key);
           }
         })
       });
@@ -188,6 +195,7 @@ class ListsService {
   }
 
   writeShareUser(newPostKey, shareUser, email){
+      this._listResource.share_list_user({id: newPostKey, email: email});
       let newPostKey1 = firebase.database().ref().child('lists/'+newPostKey+'/share_users').push().key;
       let updates = {};
       updates[''+newPostKey1] = {
@@ -205,7 +213,8 @@ class ListsService {
       firebase.database().ref().child('users/'+ shareUser+'/share_lists').update(updates);
   }
 
-  writeShareEmail(newPostKey, shareEmail){
+  writeShareEmail(newPostKey, shareEmail, secret_key){
+      this._listResource.share_list_email({id: newPostKey, email: share_email, key: secret_key});
       let newPostKey1 = firebase.database().ref().child('lists/'+newPostKey+'/share_email').push().key;
       let updates = {};
       updates[''+newPostKey1] = shareEmail;
