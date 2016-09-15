@@ -2,7 +2,7 @@
  * LoginController
  */
 class LoginController {
-    constructor($state, authService, $stateParams, email, code) {
+    constructor($state, authService, $stateParams) {
         this._$state = $state;
         this._$stateParams = $stateParams;
         this._authService = authService;
@@ -27,7 +27,7 @@ class LoginController {
     }
 }
 
-LoginController.$inject = ['$state', 'authService', '$stateParams', 'email', 'code'];
+LoginController.$inject = ['$state', 'authService', '$stateParams'];
 
 export {
     LoginController

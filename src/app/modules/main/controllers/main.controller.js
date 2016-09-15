@@ -31,12 +31,8 @@ class MainController {
                 }
               });
           } else {
-            if($state.current.name!='lists.listCard') {
-              if(_this._$stateParams.email){
-                $state.go("login",{email: _this._$stateParams.email, code: _this._$stateParams.code});
-              }else{
+            if($state.current.name!='lists.listCard' && $state.current.name!='lists.confirmLogin') {
                 $state.go("login");
-              }
             }
           }
         });

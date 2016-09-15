@@ -34,12 +34,12 @@ class AuthService {
                 firebase.auth().onAuthStateChanged(function(user) {
                   firebase.database().ref('users/'+user.uid).once('value')
                     .then((res) => {
+                        _this._progressService.hideCircular();
                         if(res.val().confirm){
-                          _this._progressService.hideCircular();
                           _this._$state.go("app");
                         }else{
-                          _this._progressService.hideCircular();
                           _this._notifyService.info("Для активации учётной записи, пройдите по ссылке, отправленной на указанный e-mail");
+                          _this.logOut();
                         }
                       });
                 });
@@ -56,8 +56,11 @@ class AuthService {
       return firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(function(data){
           _this._notifyService.info("Регистрация прошла успешно! Для активации учётной записи, пройдите по ссылке, отправленной на указанный e-mail");
-          _this.createUserInBase(email);
           _this._progressService.hideCircular();
+          firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(() => {
+              _this.createUserInBase(email, password);
+            });
         })
         .catch(function(error) {
           _this._notifyService.error(error);
@@ -79,27 +82,36 @@ class AuthService {
       return text;
     }
 
-    createUserInBase(email) {
+    createUserInBase(email, password) {
         let _this = this;
         firebase.auth().onAuthStateChanged(function(user) {
+        console.log(user)
             if(!user){
               return;
             }
+        console.log(user.uid)
             var newUser = {};
             let code = _this.createSecretCod();
-            newUser[user.uid+""] = {
-                "email": email,
-                "lists": "",
-                "share_lists": "",
-                "friends_email": "",
-                "confirm": false,
-                "confirm_code": code
-            };
-            firebase.database().ref('users').update(newUser);
-            var newEmail = {};
-            newEmail[_this.refactorEmail(email)+""] = user.uid;
-            firebase.database().ref('emails').update(newEmail);
-            _this.sendConfirmEmail({email: email, code: code});
+            firebase.database().ref('users/'+user.uid).once('value')
+              .then(data => {
+                if(data.val()){
+                  return;
+                }
+                newUser[user.uid+""] = {
+                    "email": email,
+                    "lists": "",
+                    "share_lists": "",
+                    "friends_email": "",
+                    "confirm": false,
+                    "confirm_code": code
+                };
+                firebase.database().ref('users').update(newUser);
+                var newEmail = {};
+                newEmail[_this.refactorEmail(email)+""] = user.uid;
+                firebase.database().ref('emails').update(newEmail);
+                _this.sendConfirmEmail({email: email, code: code, password: password});
+                _this.logOut();
+              })
         });
     }
 
@@ -109,17 +121,10 @@ class AuthService {
      */
     logOut() {
         var _this = this;
-        this._progressService.showCircular();
         firebase.auth().signOut().then(function() {
-            _this._progressService.hideCircular();
-            if(_this._$stateParams.email){
-              _this._$state.go("login",{email: _this._$stateParams.email, code: _this._$stateParams.code});
-            }else{
-              _this._$state.go("login");
-            }
+            _this._$state.go("login");
         }, function(error) {
             _this._notifyService.error(error);
-            _this._progressService.hideCircular();
         });
     }
 
