@@ -153,6 +153,7 @@ class ListsService {
       updates[''+newPostKey].share_users = "";
       updates[''+newPostKey].share_email = "";
       updates[''+newPostKey].last_update = "";
+      updates[''+newPostKey].not_consider_count = 0;
       updates[''+newPostKey].secret_key = this.createSecretCod();
       firebase.database().ref().child('lists').update(updates);
 
@@ -250,6 +251,13 @@ class ListsService {
       complete: item.value.complete
     });
     this.writeChangeToList(listId, item.key, "update");
+  }
+
+  updateNotConsiderCount(sum, id) {
+    let ref = firebase.database().ref().child('lists/' + id);
+    ref.update({
+      not_consider_count: sum
+    });
   }
 
   removeList(list) {

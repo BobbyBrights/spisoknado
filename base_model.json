@@ -43,6 +43,7 @@
                 "items": {
                     "$uid": "$uid_item"
                 },
+                "not_consider_count": 0,
                 "last_update": "date"
             }
         },

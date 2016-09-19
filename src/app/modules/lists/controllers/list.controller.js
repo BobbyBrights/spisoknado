@@ -233,7 +233,7 @@ class ListController {
         sum += it.value.weight*it.value.count;
       }
     });
-    return sum;
+    return sum-this.listObject.not_consider_count;
   }
 
   getAllSum() {
@@ -244,7 +244,18 @@ class ListController {
     this.listObject.items.forEach(it => {
         sum += it.value.weight*it.value.count;
     });
-    return sum;
+    return sum-this.listObject.not_consider_count;
+  }
+
+  updateNotConsiderCount() {
+    if(!this.listObject.items || !this.listObject.items.length) {
+      return 0;
+    }
+    let sum = 0;
+    this.listObject.items.forEach(it => {
+        sum += it.value.weight*it.value.count;
+    });
+    this._listsService.updateNotConsiderCount();
   }
 
 }
