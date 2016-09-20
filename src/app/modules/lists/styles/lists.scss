@@ -1,5 +1,5 @@
 .table {
-
+  width: 100%;
   tr {
     cursor: pointer;
 
@@ -67,5 +67,13 @@ md-input-container.spisoknado-input-container-short-count {
 
   span.text-in-item {
     margin-bottom: 4px;
+  }
+}
+
+md-menu-item.spisoknado-menu-item {
+  height: auto;
+
+  button {
+    line-height: inherit;
   }
 }

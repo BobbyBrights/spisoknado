@@ -2,22 +2,38 @@
   <md-content layout-padding flex layout="column" class="spisoknado-main-content">
     <h3 class="md-headline">{{listCardCtrl.listObject.title}}</h3>
 
+    <span  ng-show="!listCardCtrl.editable">Чтобы редактировать список, необходимо авторизоваться на сайте</span><br>
+
     <div layout="column">
       Сумма не купленного: {{listCardCtrl.getSumNotComplete() ? listCardCtrl.getSumNotComplete() : '0'}}  <br>
       Сумма купленного: {{listCardCtrl.getSumComplete() ? listCardCtrl.getSumComplete() : '0'}}  <br>
       Общая сумма: {{listCardCtrl.getAllSum() ? listCardCtrl.getAllSum() : '0'}}
     </div>
 
-    <div layout="row">
+    <div layout="row" layout-align="start center" ng-show="listCardCtrl.editable">
       <span flex></span>
       <md-checkbox class="checkbox-in-item" ng-model="listCardCtrl.showRemove" aria-label="spisoknado">
         Режим удаления
        </md-checkbox>
+      <span flex="10"></span>
+      <md-menu md-position-mode="target-right target">
+        <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
+          <md-icon >more_vert</md-icon>
+        </md-button>
+        <md-menu-content width="4">
+          <md-menu-item class="spisoknado-menu-item">
+            <md-button ng-click="listCardCtrl.updateNotConsiderCount()">Установить новый порог<br>для игнорирования расходов</md-button>
+          </md-menu-item>
+          <md-menu-item class="spisoknado-menu-item">
+            <md-button ng-click="listCardCtrl.setNullConsiderCount()">Обнулить порог<br>игнорирования расходов</md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
     </div>
 
     <div layout="column">
       <div class="item-block" ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="!item.value.complete" layout-align="space-between center">
-        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-show="!item.hide" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado">
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-show="!item.hide && listCardCtrl.editable" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado">
         </md-checkbox>
         <span class="list-item spisoknado-pointer spisoknado-list-item text-in-item" ng-show="!item.hide" ng-click="listCardCtrl.openUpdateItem(item)">{{item.value.title}}</span>
         <form ng-submit="listCardCtrl.updateFrontItem(item)" ng-show="item.hide">
@@ -42,7 +58,7 @@
       </div>
     </div>
 
-    <form ng-submit="listCardCtrl.addItem()" name="formCreate">
+    <form ng-submit="listCardCtrl.addItem()" name="formCreate" ng-show="listCardCtrl.editable">
         <section class="md-dialog-content">
                 <section layout="row" flex>
                     <md-input-container flex aria-label="spisoknado">
@@ -65,7 +81,7 @@
     <div layout="column">
       <div ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="item.value.complete">
 
-        <md-checkbox ng-model="item.value.complete" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado">
+        <md-checkbox ng-model="item.value.complete" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado" ng-show="listCardCtrl.editable">
 
         </md-checkbox>
         <span class="list-item spisoknado-pointer spisoknado-list-item">{{item.value.title}}</span>

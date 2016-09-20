@@ -214,7 +214,7 @@ class ListsService {
       firebase.database().ref().child('users/'+ shareUser+'/share_lists').update(updates);
   }
 
-  writeShareEmail(newPostKey, shareEmail, secret_key){
+  writeShareEmail(newPostKey, share_email, secret_key){
       this._listResource.share_list_email({id: newPostKey, email: share_email, key: secret_key});
       let newPostKey1 = firebase.database().ref().child('lists/'+newPostKey+'/share_email').push().key;
       let updates = {};
@@ -253,7 +253,7 @@ class ListsService {
     this.writeChangeToList(listId, item.key, "update");
   }
 
-  updateNotConsiderCount(sum, id) {
+  updateNotConsiderCount(id, sum) {
     let ref = firebase.database().ref().child('lists/' + id);
     ref.update({
       not_consider_count: sum

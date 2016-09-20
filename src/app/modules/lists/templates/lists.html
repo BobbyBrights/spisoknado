@@ -1,45 +1,55 @@
-<md-tabs md-border-bottom md-dynamic-height class="spisoknado-main-content">
-    <md-tab label="Мои списки">
-        <md-card class="admin-card" layout="column">
-            <md-card-content layout="column" layout-align="space-between">
-                <table class="table table-hover clickable no-padding table-text-align-top">
-                  <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myLists" >
-                    <td>{{list.title}}</td>
-                    <td layout="row"><span flex></span>
-                      <md-menu>
-                        <md-button class="md-icon-button menu-button" ng-click="$mdOpenMenu($event)">
-                          <md-icon>more_vert</md-icon>
+
+<md-card class="admin-card" layout="column">
+  <md-card-content layout="column" layout-align="space-between">
+  <div layout="row">
+    <div layout="row" flex="45">
+      <div layout="column" flex="100">
+        <h3 class="md-headline">Мои списки</h3><br>
+        <div layout="column" layout-align="space-between">
+            <table class="table table-hover clickable no-padding table-text-align-top">
+              <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myLists" >
+                <td layout="row" layout-align="start center"><span>{{list.title}}</span>
+                  <span flex></span>
+                  <md-menu>
+                    <md-button class="md-icon-button menu-button" ng-click="$mdOpenMenu($event)">
+                      <md-icon>more_vert</md-icon>
+                    </md-button>
+                    <md-menu-content width="4">
+                      <md-menu-item>
+                        <md-button ng-click="lists.openModalEdit(list)">
+                          <md-icon>edit</md-icon>
+                          Редактировать
                         </md-button>
-                        <md-menu-content width="4">
-                          <md-menu-item>
-                            <md-button ng-click="lists.openModalEdit(list)">
-                              <md-icon>edit</md-icon>
-                              Редактировать
-                            </md-button>
-                          </md-menu-item>
-                          <md-menu-item>
-                            <md-button ng-click="lists.removeList(list)">
-                              <md-icon>delete</md-icon>
-                              Удалить
-                            </md-button>
-                          </md-menu-item>
-                        </md-menu-content>
-                      </md-menu>
-                    </td>
-                  </tr>
-                </table>
-            </md-card-content>
-        </md-card>
-    </md-tab>
-    <md-tab label="Доступные списки">
-        <md-card class="admin-card" layout="column">
-            <md-card-content layout="column" layout-align="space-between">
-                <table class="table table-hover clickable no-padding table-text-align-top">
-                  <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myShareLists" >
-                    <td>{{list.title}}</td>
-                  </tr>
-                </table>
-            </md-card-content>
-        </md-card>
-    </md-tab>
-</md-tabs>
+                      </md-menu-item>
+                      <md-menu-item>
+                        <md-button ng-click="lists.removeList(list)">
+                          <md-icon>delete</md-icon>
+                          Удалить
+                        </md-button>
+                      </md-menu-item>
+                    </md-menu-content>
+                  </md-menu>
+                </td>
+              </tr>
+            </table>
+          </div>
+      </div>
+    </div>
+    <span flex="10"></span>
+    <div layout="row" flex="45">
+      <div layout="column" flex="100">
+        <h3 class="md-headline">Доступные списки</h3><br>
+        <div layout="column" layout-align="space-between">
+            <table class="table table-hover clickable no-padding table-text-align-top">
+              <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myShareLists" >
+                <td>{{list.title}}</td>
+              </tr>
+            </table>
+          </div>
+      </div>
+    </div>
+  </div>
+  </md-card-content>
+</md-card>
+
+

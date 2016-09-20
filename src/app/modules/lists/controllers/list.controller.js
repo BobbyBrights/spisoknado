@@ -27,13 +27,17 @@ class ListController {
     for(let i = 1; i<101; i++) {
       this.countMas.push(i);
     }
+    this.editable = true;
 
     if(this.email!='' && this.kod!=''){
       this.checkListByShareEmail();
+      this.editable = false;
     }else{
       let _this = this;
+      let t = 0;
       let interval_current_user = window.setInterval(function(){
-        if(CONSTANT_SPISOKNADO.user_uid!=null){
+        t++;
+        if(CONSTANT_SPISOKNADO.user_uid!=null || t>200){
           _this.checkPermission();
           window.clearInterval(interval_current_user);
         }
@@ -195,6 +199,9 @@ class ListController {
   }
 
   openUpdateItem(item) {
+    if(!this.editable){
+      return;
+    }
     this.listObject.items.forEach(it => {
       it.hide = it.key === item.key;
       if(it.hide){
@@ -253,9 +260,17 @@ class ListController {
     }
     let sum = 0;
     this.listObject.items.forEach(it => {
-        sum += it.value.weight*it.value.count;
+        if(it.value.complete){
+          sum += it.value.weight*it.value.count;
+        }
     });
-    this._listsService.updateNotConsiderCount();
+    this.listObject.not_consider_count = sum;
+    this._listsService.updateNotConsiderCount(this.listObject.id, sum);
+  }
+
+  setNullConsiderCount() {
+    this.listObject.not_consider_count = 0;
+    this._listsService.updateNotConsiderCount(this.listObject.id, 0);
   }
 
 }
