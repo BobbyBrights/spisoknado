@@ -309,7 +309,7 @@ class ListsService {
                       user_id: user_id
                     }
                     let newList = {
-                      key: x
+                      key: x,
                       last_update: res.val()[x].last_update
                     }
                     firebase.database().ref().child('lists/' + x + '/share_users').push(newUser);
