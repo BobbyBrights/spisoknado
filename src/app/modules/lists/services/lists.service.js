@@ -215,11 +215,11 @@ class ListsService {
   }
 
   writeShareEmail(newPostKey, share_email, secret_key){
-      this._listResource.share_list_email({id: newPostKey, email: share_email, key: secret_key});
       let newPostKey1 = firebase.database().ref().child('lists/'+newPostKey+'/share_email').push().key;
       let updates = {};
-      updates[''+newPostKey1] = shareEmail;
+      updates[''+newPostKey1] = share_email;
       firebase.database().ref().child('lists/'+newPostKey+'/share_email').update(updates);
+      this._listResource.share_list_email({id: newPostKey, email: share_email, key: secret_key});
   }
 
   createSecretCod(){
@@ -283,6 +283,46 @@ class ListsService {
         }
       });
     firebase.database().ref().child('lists/' + list.key).remove();
+  }
+
+  createShareListByNewUser(email, user_id) {
+    let _this = this;
+    let interval_current_user = window.setInterval(function(){
+      if(firebase.auth().currentUser!=null){
+        _this.createShareListByNewUserBegin(email, firebase.auth().currentUser.uid);
+        window.clearInterval(interval_current_user);
+      }
+    },15);
+  }
+
+  createShareListByNewUserBegin(email, user_id) {
+    firebase.database().ref().child('lists').once('value')
+          .then(res => {
+            for(let x in res.val()) {
+              let emails = res.val()[x].share_email;
+              let newEmails = {};
+              if(emails instanceof Object){
+                for(let y in emails) {
+                  if(emails[y] === email){
+                    let newUser = {
+                      email: email,
+                      user_id: user_id
+                    }
+                    let newList = {
+                      key: x
+                      last_update: res.val()[x].last_update
+                    }
+                    firebase.database().ref().child('lists/' + x + '/share_users').push(newUser);
+                    firebase.database().ref().child('users/' + user_id + '/share_lists').push(newList);
+                  }else{
+                    newEmails[y] = emails[x];
+                  }
+                }
+                firebase.database().ref().child('lists/' + x + '/share_email').set(newEmails);
+              }
+            }
+            this._$state.go('lists.list');
+          })
   }
 
 

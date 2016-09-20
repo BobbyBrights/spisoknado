@@ -110,11 +110,15 @@ class ListController {
   checkListByShareEmail() {
     this._listsService.getListById(this.listId)
       .then((res) => {
-        if(res.val().secret_key!=this.kod){
+        if(res.val().secret_key !== this.kod){
           this._$state.go('lists.list');
           return;
         }
         let flag = true;
+        if(!(res.val().share_email instanceof Object)) {
+          this._$state.go('lists.list');
+          return;
+        }
         for(let x in res.val().share_email){
           if(res.val().share_email[x]==this.email){
             flag = true;

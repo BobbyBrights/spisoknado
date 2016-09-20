@@ -34,7 +34,10 @@
                 "title": "",
                 "author": "$uid_user",
                 "share_users": {
-                    "$uid": "$uid_user"
+                    "$uid": {
+                      "email": "email",
+                      "user_id": "$uid_user"
+                    }
                 },
                 "share_email": {
                     "$uid": "email"

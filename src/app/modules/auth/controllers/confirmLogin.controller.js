@@ -2,11 +2,13 @@
  * ConfirmLoginController
  */
 class ConfirmLoginController {
-    constructor($state, authService, notifyService, $stateParams, email, code, password) {
+    constructor($state, authService, notifyService, $stateParams, listsService, progressService, email, code, password) {
         this._$state = $state;
         this._$stateParams = $stateParams;
         this._authService = authService;
         this._notifyService = notifyService;
+        this._progressService = progressService;
+        this._listsService = listsService;
         this.email = email;
         this.code = code;
         this.password = password;
@@ -33,7 +35,24 @@ class ConfirmLoginController {
                                 }
                                 firebase.database().ref('users/'+data.val()).set(user);
                                 this._notifyService.info('подтверждение прошло успешно');
-                                this._authService.singIn(this.email, this.password);
+                                var _this = this;
+                                this._progressService.showCircular();
+                                firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+                                    .then(function(){
+                                        firebase.auth().onAuthStateChanged(function(user) {
+                                          firebase.database().ref('users/'+user.uid).once('value')
+                                            .then((res) => {
+                                                _this._progressService.hideCircular();
+                                                _this._listsService.createShareListByNewUser(_this.email, data.val());
+                                              });
+                                        });
+                                    })
+                                    .catch(function(error) {
+                                      _this._notifyService.error(error);
+                                      _this._progressService.hideCircular();
+                                    });
+
+
                               }else{
                                 this._notifyService.error('неверный код подтвеждения');
                               }
@@ -49,7 +68,7 @@ class ConfirmLoginController {
     }
 }
 
-ConfirmLoginController.$inject = ['$state', 'authService', 'notifyService', '$stateParams', 'email', 'code', 'password'];
+ConfirmLoginController.$inject = ['$state', 'authService', 'notifyService', '$stateParams', 'listsService', 'progressService', 'email', 'code', 'password'];
 
 export {
     ConfirmLoginController
