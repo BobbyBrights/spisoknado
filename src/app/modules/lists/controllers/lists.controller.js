@@ -17,6 +17,9 @@ class ListsController {
     this._authService.createAuthToken();
     let interval_current_user = window.setInterval(function(){
       if(CONSTANT_SPISOKNADO.user_uid!=null){
+        if(!CONSTANT_SPISOKNADO.user_first_auth) {
+          _this._listsService.createShareListByNewUserBegin(CONSTANT_SPISOKNADO.user_email, CONSTANT_SPISOKNADO.user_uid);
+        }
         _this.createOn();
         _this.createOnShare();
         window.clearInterval(interval_current_user);

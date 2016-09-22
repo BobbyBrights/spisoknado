@@ -314,11 +314,16 @@ class ListsService {
                     }
                     firebase.database().ref().child('lists/' + x + '/share_users').push(newUser);
                     firebase.database().ref().child('users/' + user_id + '/share_lists').push(newList);
+                    firebase.database().ref().child('users/' + user_id).update({first_auth: true});
                   }else{
                     newEmails[y] = emails[x];
                   }
                 }
-                firebase.database().ref().child('lists/' + x + '/share_email').set(newEmails);
+                if(newEmails === {}){
+                  firebase.database().ref().child('lists/' + x).update({share_email: ''});
+                }else{
+                  firebase.database().ref().child('lists/' + x + '/share_email').set(newEmails);
+                }
               }
             }
             this._$state.go('lists.list');

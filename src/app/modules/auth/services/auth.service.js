@@ -54,7 +54,6 @@ class AuthService {
     singUp(email, password) {
       var _this = this;
       this.createUserId = null;
-              console.log("1")
       this._progressService.showCircular();
       return firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(function(data){
@@ -155,6 +154,8 @@ class AuthService {
                     .then((res) => {
                       if(res.val() && res.val().confirm){
                         CONSTANT_SPISOKNADO.user_uid = user.uid;
+                        CONSTANT_SPISOKNADO.user_email = user.email;
+                        CONSTANT_SPISOKNADO.user_first_auth = res.val().first_auth;
                         let interval_current_user = window.setInterval(function(){
                           if(firebase.auth().currentUser!=null){
                             _this.user = firebase.auth().currentUser;

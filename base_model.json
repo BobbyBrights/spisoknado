@@ -5,6 +5,7 @@
                 "email": "email",
                 "confirm": true,
                 "confirm_code": "code",
+                "first_auth": false,
                 "lists": {
                     "$uid": {
                       "key": "$uid_list",

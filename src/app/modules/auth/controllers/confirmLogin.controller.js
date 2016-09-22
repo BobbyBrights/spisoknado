@@ -12,7 +12,6 @@ class ConfirmLoginController {
         this.email = email;
         this.code = code;
         this.password = password;
-        console.log(this.email, this.code, this.password)
         this.confirm();
     }
 
@@ -31,28 +30,13 @@ class ConfirmLoginController {
                                   "lists": "",
                                   "share_lists": "",
                                   "friends_email": "",
-                                  "confirm": true
+                                  "confirm": true,
+                                  "first_auth": false
                                 }
                                 firebase.database().ref('users/'+data.val()).set(user);
                                 this._notifyService.info('подтверждение прошло успешно');
                                 var _this = this;
-                                this._progressService.showCircular();
-                                firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-                                    .then(function(){
-                                        firebase.auth().onAuthStateChanged(function(user) {
-                                          firebase.database().ref('users/'+user.uid).once('value')
-                                            .then((res) => {
-                                                _this._progressService.hideCircular();
-                                                _this._listsService.createShareListByNewUser(_this.email, data.val());
-                                              });
-                                        });
-                                    })
-                                    .catch(function(error) {
-                                      _this._notifyService.error(error);
-                                      _this._progressService.hideCircular();
-                                    });
-
-
+                                this._authService.singIn(this.email, this.password);
                               }else{
                                 this._notifyService.error('неверный код подтвеждения');
                               }
