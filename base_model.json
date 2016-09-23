@@ -48,7 +48,8 @@
                     "$uid": "$uid_item"
                 },
                 "not_consider_count": 0,
-                "last_update": "date"
+                "last_update": "date",
+                "is_list": false
             }
         },
         "items": {
@@ -60,7 +61,8 @@
                 },
                 "count": 1,
                 "weight": 1,
-                "complete": false
+                "complete": false,
+                "list_id": "$uid_list"
             }
         }
     }

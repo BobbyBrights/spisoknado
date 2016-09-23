@@ -18,6 +18,7 @@ class ListController {
     this.email = email;
     this.kod = kod;
     this.newItem = "";
+    this.newSubItem = "";
     this.last_update = {
       data: new Date(),
       item: ""
@@ -89,18 +90,33 @@ class ListController {
               _this.updateItem(data.val().item);
               return;
             }
+            if(data.val().action == "create_sub_item"){
+              _this.createOnSubItem(data.val().item);
+              return;
+            }
             if(data.val().action == "remove"){
               _this.removeItemFront(data.val().item);
               return;
             }
             if(data.val().action == "update_info"){
-              this._$state.reload();
+              this.updateInfoList();
             }
           }
     });
     firebase.database().ref('lists/' + this.listId).on('child_removed', function(data) {
       this._$state.go("lists.list");
     });
+  }
+
+  updateInfoList() {
+    firebase.database().ref('lists/' + this.listId).once('value')
+      .then(res => {
+        this.listObject.is_list = res.val().is_list;
+        this.listObject.not_consider_count = res.val().not_consider_count;
+        this.listObject.share_email = res.val().share_email;
+        this.listObject.share_users = res.val().share_users;
+        this.listObject.title = res.val().title;
+      })
   }
 
   checkPermission() {
@@ -187,7 +203,10 @@ class ListController {
       this._listsService.getItemById(items[x])
         .then((res) => {
           loadItem++;
-          this.listObject.items.push({value: res.val(), key: res.key, hide: false});
+          this.listObject.items.push({value: res.val(), key: res.key, hide: false, level: 0});
+          if(res.val().childs instanceof Object) {
+            this.loadAllChild(res.key, res.val().childs);
+          }
           if(loadItem >= length){
             this._$rootScope.$apply();
           }
@@ -212,7 +231,10 @@ class ListController {
     }
     this._listsService.getItemById(itemId)
         .then((res) => {
-          this.listObject.items[index] = {value: res.val(), key: res.key, hide: false};
+          this.listObject.items[index].value.title = res.val().title;
+          this.listObject.items[index].value.count = res.val().count;
+          this.listObject.items[index].value.weight = res.val().weight;
+          this.listObject.items[index].value.complete = res.val().complete;
           this._$rootScope.$apply();
         });
   }
@@ -220,18 +242,43 @@ class ListController {
   addItemToList(itemId) {
     this._listsService.getItemById(itemId)
         .then((res) => {
-          this.listObject.items.push({value: res.val(), key: res.key, hide: false});
+          this.listObject.items.push({value: res.val(), key: res.key, hide: false, level: 0});
           this._$rootScope.$apply();
         });
   }
 
   removeItem(itemId){
-    remove(this.listObject.items, function(o) { return o.key == itemId; });
-    this._listsService.removeItemById(this.listObject.id, itemId)
+    let item = this.listObject.items[findIndex(this.listObject.items, function(o) { return o.key == itemId; })];
+
+        if(item.value.childs instanceof Object) {
+          const confirm = this._$mdDialog.confirm({
+              title: 'Удалить пункт со всеми подпунктами?',
+              ok: 'Удалить',
+              cancel: 'Отмена'
+          });
+          this._$mdDialog.show(confirm)
+            .then(() => {
+              this.removeItemFront(itemId);
+              this._listsService.removeItemById(this.listObject.id, itemId);
+            })
+        }else{
+          this.removeItemFront(itemId);
+          this._listsService.removeItemById(this.listObject.id, itemId)
+        }
   }
 
   removeItemFront(itemId){
+
+    let item = this.listObject.items[findIndex(this.listObject.items, function(o) { return o.key == itemId; })];
+
+    if(item.value.childs instanceof Object) {
+      for(let x in item.value.childs){
+        this.removeItemFront(item.value.childs[x]);
+      }
+    }
+
     remove(this.listObject.items, function(o) { return o.key == itemId; });
+
   }
 
   openUpdateItem(item) {
@@ -249,8 +296,23 @@ class ListController {
   }
 
   updateFrontItem(item) {
+    let weight = this.listObject.items[findIndex(this.listObject.items, o => o.key === item.key)].value.weight;
+    this.listObject.items[findIndex(this.listObject.items, o => o.key == item.key)].value.weight = weight === '' ? 0 : weight;
     this._listsService.updateFrontItem(this.listObject.id, item);
     item.hide = false;
+    this.updateChildFront(item);
+  }
+
+  updateChildFront(item) {
+    if(item.value.childs instanceof Object) {
+      for(let x in item.value.childs){
+        if(!this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])]) {
+          return;
+        }
+        this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])].value.complete = item.value.complete;
+        this.updateChildFront(this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])]);
+      }
+    }
   }
 
   getSumNotComplete() {
@@ -307,6 +369,89 @@ class ListController {
   setNullConsiderCount() {
     this.listObject.not_consider_count = 0;
     this._listsService.updateNotConsiderCount(this.listObject.id, 0);
+  }
+
+  changeIsList() {
+    this._listsService.updateIsList(this.listObject.id, this.listObject.is_list);
+  }
+
+  addSubItem(item) {
+    let itemId = this._listsService.newSubItem(this.listObject.id, item, this.newSubItem);
+    this.createOnSubItem(itemId);
+    this.newSubItem = "";
+  }
+
+  checkOnNullWeight(item) {
+    let weight = this.listObject.items[findIndex(this.listObject.items, o => o.key === item.key)].value.weight;
+    this.listObject.items[findIndex(this.listObject.items, o => o.key == item.key)].value.weight = weight === 0 ? '' : weight;
+  }
+
+  createOnSubItem(itemId) {
+    this._listsService.getItemById(itemId)
+      .then(res => {
+        if(!res.val()){
+          return;
+        }
+        let parentId = res.val().parent;
+        let index = findIndex(this.listObject.items, o => o.key === parentId);
+        this.listObject.items[index].level = this.listObject.items[index].level ? this.listObject.items[index].level : 0;
+        let level = this.listObject.items[index].level > 9 ? 10 : this.listObject.items[index].level+1;
+        this.listObject.items = this._listsService.addToMasByIndex(this.listObject.items, index+1, {value: res.val(), key: res.key, hide: false, level: level});
+        this._$rootScope.$apply();
+        if(res.val().childs instanceof Object) {
+          this.loadAllChild(res.key, res.val().childs);
+        }
+      });
+  }
+
+  loadAllChild(parentId, childs) {
+    for(let x in childs) {
+      this.createOnSubItem(childs[x]);
+    }
+  }
+
+  hasChild(item) {
+    if(item.value.childs instanceof Object){
+      for(let x in item.value.childs) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  rootIsComplete(item) {
+    let parent = item;
+    let findParent = {};
+    while(parent !== null) {
+      findParent = parent;
+      parent = this.findParent(parent);
+    }
+    return findParent.value.complete;
+  }
+
+  findParent(index) {
+    if(index.value.parent === '' || !index.value.parent) {
+      return null;
+    }
+    return this.listObject.items[findIndex(this.listObject.items, o => o.key === index.value.parent)];
+  }
+
+  getSumWeightChild(item) {
+    let sum = 0;
+    if(!(item.value.childs instanceof Object)){
+      return sum;
+    }
+    for(let x in item.value.childs) {
+      let newItem = this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])];
+      if(newItem) {
+        if(newItem.value.childs instanceof Object) {
+          sum += this.getSumWeightChild(newItem);
+        }else{
+          sum += newItem.value.weight*newItem.value.count;
+        }
+      }
+    }
+    return sum;
   }
 
 }

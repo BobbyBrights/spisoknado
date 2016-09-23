@@ -31,18 +31,32 @@ class ListsService {
         return firebase.database().ref('items/' + uid).once('value');
   }
 
-  removeItemById(listId, itemKey) {
-        firebase.database().ref('items/' + itemKey).remove();
-        firebase.database().ref('lists/' + listId + '/items').once('value')
-          .then((res) => {
-            for(var x in res.val()){
-              if(res.val()[x] == itemKey){
-                firebase.database().ref('lists/' + listId + '/items/' + x).remove();
-                break;
+  removeItemById(listId, itemKey, noWriteLog) {
+
+        this.getItemById(itemKey)
+          .then(res => {
+
+            if(res.val().childs instanceof Object) {
+              for(let x in res.val().childs) {
+                this.removeItemById(listId, res.val().childs[x], true);
               }
             }
-          });
-        this.writeChangeToList(listId, itemKey, "remove")
+
+            firebase.database().ref('items/' + itemKey).remove();
+            firebase.database().ref('lists/' + listId + '/items').once('value')
+              .then((res) => {
+                for(var x in res.val()){
+                  if(res.val()[x] == itemKey){
+                    firebase.database().ref('lists/' + listId + '/items/' + x).remove();
+                    break;
+                  }
+                }
+              });
+              if(!noWriteLog) {
+                this.writeChangeToList(listId, itemKey, "remove");
+              }
+          })
+
   }
 
   writeChangeToList(uid, itemKey, action) {
@@ -154,6 +168,7 @@ class ListsService {
       updates[''+newPostKey].share_email = "";
       updates[''+newPostKey].last_update = "";
       updates[''+newPostKey].not_consider_count = 0;
+      updates[''+newPostKey].is_list = false;
       updates[''+newPostKey].secret_key = this.createSecretCod();
       firebase.database().ref().child('lists').update(updates);
 
@@ -186,6 +201,9 @@ class ListsService {
       updates[''+newPostKey].count = 1;
       updates[''+newPostKey].weight = 0;
       updates[''+newPostKey].complete = false;
+      updates[''+newPostKey].parent = "";
+      updates[''+newPostKey].childs = "";
+      updates[''+newPostKey].list_id = listId;
       firebase.database().ref().child('items').update(updates);
       let newPostKey1 = firebase.database().ref().child('lists/' + listId + '/items').push().key;
       updates = {};
@@ -242,7 +260,7 @@ class ListsService {
       return ref.once('value');
   }
 
-  updateFrontItem(listId, item) {
+  updateFrontItem(listId, item, notWriteChange) {
     let ref = firebase.database().ref().child('items/' + item.key);
     ref.update({
       title: item.value.title,
@@ -250,7 +268,22 @@ class ListsService {
       weight: item.value.weight,
       complete: item.value.complete
     });
-    this.writeChangeToList(listId, item.key, "update");
+    if(!notWriteChange){
+      this.writeChangeToList(listId, item.key, "update");
+    }
+    if(item.value.childs instanceof Object) {
+      for(let x in item.value.childs) {
+        this.getItemById(item.value.childs[x])
+          .then(res => {
+            if(!res.val()) {
+              return;
+            }
+            let childItem = {value: res.val(), key: res.key, hide: false, level: res.val().level ? res.val().level : 0}
+            childItem.value.complete = item.value.complete;
+            this.updateFrontItem(listId, childItem, true);
+          })
+      }
+    }
   }
 
   updateNotConsiderCount(id, sum) {
@@ -258,6 +291,7 @@ class ListsService {
     ref.update({
       not_consider_count: sum
     });
+    this.writeChangeToList(id, '', "update_info");
   }
 
   removeList(list) {
@@ -324,13 +358,47 @@ class ListsService {
                 }else{
                   firebase.database().ref().child('lists/' + x + '/share_email').set(newEmails);
                 }
+                this.writeChangeToList(x, '', "update_info");
               }
             }
             this._$state.go('lists.list');
           })
   }
 
+  updateIsList(id, is_list) {
+       firebase.database().ref().child('lists/' + id).update({is_list: is_list});
+       this.writeChangeToList(id, '', "update_info");
+  }
 
+  newSubItem(listId, item, newSubItem) {
+      let newPostKey = firebase.database().ref().child('items').push().key;
+      let updates = {};
+      updates[''+newPostKey] = {};
+      updates[''+newPostKey].title = newSubItem;
+      updates[''+newPostKey].count = 1;
+      updates[''+newPostKey].weight = 0;
+      updates[''+newPostKey].complete = false;
+      updates[''+newPostKey].parent = item.key;
+      updates[''+newPostKey].childs = "";
+      updates[''+newPostKey].list_id = listId;
+      firebase.database().ref().child('items').update(updates);
+      firebase.database().ref().child('items/' + item.key + '/childs').push(newPostKey);
+      this.writeChangeToList(listId, newPostKey, "create_sub_item");
+      return newPostKey;
+  }
+
+  addToMasByIndex(mas, index, item) {
+    if(index >= mas.length) {
+      mas.push(item);
+      return mas;
+    }
+    mas.push(mas[mas.length-1]);
+    for(let i = mas.length-2; i>index; i--) {
+      mas[i] = mas[i-1];
+    }
+    mas[index] = item;
+    return mas;
+  }
 
 }
 ListsService.$inject = ['$resource', 'progressService', 'notifyService', '$state', '$rootScope', 'authService', 'appSettings'];
