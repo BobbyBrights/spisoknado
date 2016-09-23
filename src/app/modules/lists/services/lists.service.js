@@ -154,6 +154,7 @@ class ListsService {
       updates[''+newPostKey].share_email = "";
       updates[''+newPostKey].last_update = "";
       updates[''+newPostKey].not_consider_count = 0;
+      updates[''+newPostKey].is_list = false;
       updates[''+newPostKey].secret_key = this.createSecretCod();
       firebase.database().ref().child('lists').update(updates);
 
@@ -258,6 +259,7 @@ class ListsService {
     ref.update({
       not_consider_count: sum
     });
+    this.writeChangeToList(id, '', "update_info");
   }
 
   removeList(list) {
@@ -324,10 +326,16 @@ class ListsService {
                 }else{
                   firebase.database().ref().child('lists/' + x + '/share_email').set(newEmails);
                 }
+                this.writeChangeToList(x, '', "update_info");
               }
             }
             this._$state.go('lists.list');
           })
+  }
+
+  updateIsList(id, is_list) {
+       firebase.database().ref().child('lists/' + id).update({is_list: is_list});
+       this.writeChangeToList(id, '', "update_info");
   }
 
 

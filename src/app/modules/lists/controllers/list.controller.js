@@ -94,13 +94,24 @@ class ListController {
               return;
             }
             if(data.val().action == "update_info"){
-              this._$state.reload();
+              this.updateInfoList();
             }
           }
     });
     firebase.database().ref('lists/' + this.listId).on('child_removed', function(data) {
       this._$state.go("lists.list");
     });
+  }
+
+  updateInfoList() {
+    firebase.database().ref('lists/' + this.listId).once('value')
+      .then(res => {
+        this.listObject.is_list = res.val().is_list;
+        this.listObject.not_consider_count = res.val().not_consider_count;
+        this.listObject.share_email = res.val().share_email;
+        this.listObject.share_users = res.val().share_users;
+        this.listObject.title = res.val().title;
+      })
   }
 
   checkPermission() {
@@ -307,6 +318,10 @@ class ListController {
   setNullConsiderCount() {
     this.listObject.not_consider_count = 0;
     this._listsService.updateNotConsiderCount(this.listObject.id, 0);
+  }
+
+  changeIsList() {
+    this._listsService.updateIsList(this.listObject.id, this.listObject.is_list);
   }
 
 }
