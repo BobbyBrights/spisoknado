@@ -31,18 +31,32 @@ class ListsService {
         return firebase.database().ref('items/' + uid).once('value');
   }
 
-  removeItemById(listId, itemKey) {
-        firebase.database().ref('items/' + itemKey).remove();
-        firebase.database().ref('lists/' + listId + '/items').once('value')
-          .then((res) => {
-            for(var x in res.val()){
-              if(res.val()[x] == itemKey){
-                firebase.database().ref('lists/' + listId + '/items/' + x).remove();
-                break;
+  removeItemById(listId, itemKey, noWriteLog) {
+
+        this.getItemById(itemKey)
+          .then(res => {
+
+            if(res.val().childs instanceof Object) {
+              for(let x in res.val().childs) {
+                this.removeItemById(listId, res.val().childs[x], true);
               }
             }
-          });
-        this.writeChangeToList(listId, itemKey, "remove")
+
+            firebase.database().ref('items/' + itemKey).remove();
+            firebase.database().ref('lists/' + listId + '/items').once('value')
+              .then((res) => {
+                for(var x in res.val()){
+                  if(res.val()[x] == itemKey){
+                    firebase.database().ref('lists/' + listId + '/items/' + x).remove();
+                    break;
+                  }
+                }
+              });
+              if(!noWriteLog) {
+                this.writeChangeToList(listId, itemKey, "remove");
+              }
+          })
+
   }
 
   writeChangeToList(uid, itemKey, action) {
@@ -261,7 +275,10 @@ class ListsService {
       for(let x in item.value.childs) {
         this.getItemById(item.value.childs[x])
           .then(res => {
-            let childItem = {value: res.val(), key: res.key, hide: false, level: res.val().level}
+            if(!res.val()) {
+              return;
+            }
+            let childItem = {value: res.val(), key: res.key, hide: false, level: res.val().level ? res.val().level : 0}
             childItem.value.complete = item.value.complete;
             this.updateFrontItem(listId, childItem, true);
           })
@@ -376,7 +393,7 @@ class ListsService {
       return mas;
     }
     mas.push(mas[mas.length-1]);
-    for(let i = index+1; i<mas.length-1; i++) {
+    for(let i = mas.length-2; i>index; i--) {
       mas[i] = mas[i-1];
     }
     mas[index] = item;

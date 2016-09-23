@@ -248,12 +248,37 @@ class ListController {
   }
 
   removeItem(itemId){
-    remove(this.listObject.items, function(o) { return o.key == itemId; });
-    this._listsService.removeItemById(this.listObject.id, itemId)
+    let item = this.listObject.items[findIndex(this.listObject.items, function(o) { return o.key == itemId; })];
+
+        if(item.value.childs instanceof Object) {
+          const confirm = this._$mdDialog.confirm({
+              title: 'Удалить пункт со всеми подпунктами?',
+              ok: 'Удалить',
+              cancel: 'Отмена'
+          });
+          this._$mdDialog.show(confirm)
+            .then(() => {
+              this.removeItemFront(itemId);
+              this._listsService.removeItemById(this.listObject.id, itemId);
+            })
+        }else{
+          this.removeItemFront(itemId);
+          this._listsService.removeItemById(this.listObject.id, itemId)
+        }
   }
 
   removeItemFront(itemId){
+
+    let item = this.listObject.items[findIndex(this.listObject.items, function(o) { return o.key == itemId; })];
+
+    if(item.value.childs instanceof Object) {
+      for(let x in item.value.childs){
+        this.removeItemFront(item.value.childs[x]);
+      }
+    }
+
     remove(this.listObject.items, function(o) { return o.key == itemId; });
+
   }
 
   openUpdateItem(item) {
@@ -281,6 +306,9 @@ class ListController {
   updateChildFront(item) {
     if(item.value.childs instanceof Object) {
       for(let x in item.value.childs){
+        if(!this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])]) {
+          return;
+        }
         this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])].value.complete = item.value.complete;
         this.updateChildFront(this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])]);
       }
@@ -361,11 +389,15 @@ class ListController {
   createOnSubItem(itemId) {
     this._listsService.getItemById(itemId)
       .then(res => {
+        if(!res.val()){
+          return;
+        }
         let parentId = res.val().parent;
         let index = findIndex(this.listObject.items, o => o.key === parentId);
         this.listObject.items[index].level = this.listObject.items[index].level ? this.listObject.items[index].level : 0;
         let level = this.listObject.items[index].level > 9 ? 10 : this.listObject.items[index].level+1;
         this.listObject.items = this._listsService.addToMasByIndex(this.listObject.items, index+1, {value: res.val(), key: res.key, hide: false, level: level});
+        this._$rootScope.$apply();
         if(res.val().childs instanceof Object) {
           this.loadAllChild(res.key, res.val().childs);
         }
