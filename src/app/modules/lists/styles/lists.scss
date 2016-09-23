@@ -30,6 +30,7 @@
   .md-input.input-title {
     border-width: 0;
     line-height: 17px;
+    padding-top: 5px;
   }
 
   .md-errors-spacer {
@@ -67,8 +68,15 @@ md-input-container.spisoknado-input-container-short-count {
   margin-bottom: 5px;
   padding: 0 10px 0 0;
 
+  &:hover {
+    background: #dfdfdf;
+  }
+
   span.text-in-item {
     margin-bottom: 4px;
+  }
+  div.text-in-item {
+    margin: 0 10px 4px 0;
   }
 }
 
@@ -89,4 +97,49 @@ md-checkbox.checkbox-in-item {
   min-height: 24px;
   padding: 0;
   margin: 0;
+}
+
+.margin-level {
+
+  width: 0px;
+
+  &__1 {
+    width: 5%;
+  }
+
+  &__2 {
+    width: 10%;
+  }
+
+  &__3 {
+    width: 15%;
+  }
+
+  &__4 {
+    width: 20%;
+  }
+
+  &__5 {
+    width: 25%;
+  }
+
+  &__6 {
+    width: 30%;
+  }
+
+  &__7 {
+    width: 35%;
+  }
+
+  &__8 {
+    width: 40%;
+  }
+
+  &__9 {
+    width: 45%;
+  }
+
+  &__10 {
+    width: 50%;
+  }
 }

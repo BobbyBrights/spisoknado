@@ -7,7 +7,7 @@
 
     <div layout="row" layout-align="start center" ng-show="listCardCtrl.editable">
       <md-switch ng-model="listCardCtrl.showRemove" aria-label="spisoknado" class="md-warn">
-        Режим удаления
+        Удаление и добавление
       </md-switch>
       <span flex></span>
       <md-switch ng-model="listCardCtrl.listObject.is_list" aria-label="spisoknado" class="md-warn" ng-change="listCardCtrl.changeIsList()">
@@ -38,38 +38,65 @@
     </div>
 
     <div layout="column">
-      <div class="item-block" ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="!item.value.complete" layout-align="start center">
+      <div class="item-block" ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="!listCardCtrl.rootIsComplete(item)" layout-align="start center">
+
+        <div class="margin-level" ng-class="'margin-level__' + item.level"></div>
+
         <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-show="!item.hide && listCardCtrl.editable" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado">
         </md-checkbox>
 
         <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-show="!listCardCtrl.editable" disabled aria-label="spisoknado">
         </md-checkbox>
 
-        <!--<span class="list-item spisoknado-pointer spisoknado-list-item text-in-item" ng-show="!item.hide" ng-click="listCardCtrl.openUpdateItem(item)">{{item.value.title}}</span>-->
         <form ng-submit="listCardCtrl.updateFrontItem(item)" flex>
           <md-input-container class="spisoknado-input-container" aria-label="spisoknado">
               <textarea ng-model="item.value.title" ng-blur="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado" class="input-title"></textarea>
-             <!-- <input ng-model="item.value.title" id="item{{item.key}}" ng-blur="listCardCtrl.updateFrontItem(item)" md-autofocus aria-label="spisoknado">-->
           </md-input-container>
           <md-button class="md-raised md-primary spisoknado-hide" type="submit" aria-label="spisoknado"></md-button>
         </form>
+
         <span flex="5"></span>
-        <md-input-container class="spisoknado-input-container spisoknado-input-container-short" flex="10" aria-label="spisoknado" ng-show="listCardCtrl.editable && !listCardCtrl.showRemove && !listCardCtrl.listObject.is_list">
-            <input ng-model="item.value.weight" id="item-weight-{{item.key}}" type="number" pattern="\d*" min="0" ng-blur="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado">
+
+        <md-input-container class="spisoknado-input-container spisoknado-input-container-short" flex="10" aria-label="spisoknado" ng-show="listCardCtrl.editable && !listCardCtrl.showRemove && !listCardCtrl.listObject.is_list && !listCardCtrl.hasChild(item)">
+            <input ng-model="item.value.weight" id="item-weight-{{item.key}}" type="number" pattern="\d*" min="0" ng-blur="listCardCtrl.updateFrontItem(item)" ng-focus="listCardCtrl.checkOnNullWeight(item)" aria-label="spisoknado">
         </md-input-container>
-        <md-input-container class="spisoknado-input-container spisoknado-input-container-short spisoknado-input-container-short-count" flex="10" aria-label="spisoknado" ng-show="listCardCtrl.editable && !listCardCtrl.showRemove && !listCardCtrl.listObject.is_list">
+
+        <md-input-container class="spisoknado-input-container spisoknado-input-container-short spisoknado-input-container-short-count" flex="10" aria-label="spisoknado" ng-show="listCardCtrl.editable && !listCardCtrl.showRemove && !listCardCtrl.listObject.is_list && !listCardCtrl.hasChild(item)">
             <md-select ng-model="item.value.count" ng-blur="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado">
                 <md-option ng-value="item" ng-repeat="item in listCardCtrl.countMas">{{ item }}</md-option>
             </md-select>
         </md-input-container>
 
+        <span class="list-item spisoknado-list-item text-in-item" ng-show="!listCardCtrl.editable && !listCardCtrl.showRemove && !listCardCtrl.hasChild(item)">{{item.value.weight}} * {{item.value.count}} = {{item.value.weight * item.value.count}}</span>
+        <div class="list-item spisoknado-list-item text-in-item" ng-show="listCardCtrl.editable && !listCardCtrl.showRemove && !listCardCtrl.listObject.is_list && listCardCtrl.hasChild(item)">{{listCardCtrl.getSumWeightChild(item)}}</div>
 
-        <span class="list-item spisoknado-list-item text-in-item" ng-show="!listCardCtrl.editable && !listCardCtrl.showRemove">{{item.value.weight}} * {{item.value.count}} = {{item.value.weight * item.value.count}}</span>
+
+
+        <md-menu md-position-mode="target-right target">
+          <md-button class="md-icon-button md-icon-button-delete" ng-click="$mdOpenMenu($event)" ng-show="listCardCtrl.showRemove">
+            <md-tooltip>подпункт</md-tooltip>
+            <md-icon>keyboard_return</md-icon>
+          </md-button>
+          <md-menu-content width="4">
+            <md-menu-item class="spisoknado-menu-item">
+              <form ng-submit="listCardCtrl.addSubItem(item)" flex>
+                <md-input-container class="spisoknado-input-container" aria-label="spisoknado">
+                  <label>Новый подпункт</label>
+                  <input ng-model="listCardCtrl.newSubItem" aria-label="spisoknado" class="input-title">
+                </md-input-container>
+                <md-button class="md-raised md-primary spisoknado-hide" type="submit" aria-label="spisoknado"></md-button>
+              </form>
+            </md-menu-item>
+          </md-menu-content>
+        </md-menu>
+
+        <span flex="10" ng-show="listCardCtrl.showRemove"></span>
 
         <md-button class="md-icon-button md-icon-button-delete" ng-click="listCardCtrl.removeItem(item.key)" ng-show="listCardCtrl.showRemove">
           <md-tooltip>Удалить</md-tooltip>
           <md-icon>delete_forever</md-icon>
         </md-button>
+
       </div>
     </div>
 
@@ -94,13 +121,14 @@
     </div>
 
     <div layout="column">
-      <div ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="item.value.complete">
-
-        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado" ng-show="listCardCtrl.editable"></md-checkbox>
-        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" disabled aria-label="spisoknado" ng-show="!listCardCtrl.editable"></md-checkbox>
+      <div ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="listCardCtrl.rootIsComplete(item)">
+        <div class="margin-level" ng-class="'margin-level__' + item.level"></div>
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado" ng-show="listCardCtrl.editable && item.level === 0"></md-checkbox>
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" disabled aria-label="spisoknado" ng-show="!listCardCtrl.editable && item.level !== 0 || listCardCtrl.editable && item.level !== 0 "></md-checkbox>
         <span class="list-item spisoknado-pointer spisoknado-list-item">{{item.value.title}}</span>
         <span flex></span>
-        <span ng-show="!listCardCtrl.listObject.is_list">{{item.value.weight}} * {{item.value.count}} = {{item.value.weight * item.value.count}}</span>
+        <span ng-show="!listCardCtrl.listObject.is_list && !listCardCtrl.hasChild(item)">{{item.value.weight}} * {{item.value.count}} = {{item.value.weight * item.value.count}}</span>
+        <span ng-show="!listCardCtrl.listObject.is_list && listCardCtrl.hasChild(item)">{{listCardCtrl.getSumWeightChild(item)}}</span>
       </div>
     </div>
 

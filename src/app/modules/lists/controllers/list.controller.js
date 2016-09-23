@@ -18,6 +18,7 @@ class ListController {
     this.email = email;
     this.kod = kod;
     this.newItem = "";
+    this.newSubItem = "";
     this.last_update = {
       data: new Date(),
       item: ""
@@ -87,6 +88,10 @@ class ListController {
             _this.last_update = data.val();
             if(data.val().action == "update"){
               _this.updateItem(data.val().item);
+              return;
+            }
+            if(data.val().action == "create_sub_item"){
+              _this.createOnSubItem(data.val().item);
               return;
             }
             if(data.val().action == "remove"){
@@ -198,7 +203,10 @@ class ListController {
       this._listsService.getItemById(items[x])
         .then((res) => {
           loadItem++;
-          this.listObject.items.push({value: res.val(), key: res.key, hide: false});
+          this.listObject.items.push({value: res.val(), key: res.key, hide: false, level: 0});
+          if(res.val().childs instanceof Object) {
+            this.loadAllChild(res.key, res.val().childs);
+          }
           if(loadItem >= length){
             this._$rootScope.$apply();
           }
@@ -223,7 +231,10 @@ class ListController {
     }
     this._listsService.getItemById(itemId)
         .then((res) => {
-          this.listObject.items[index] = {value: res.val(), key: res.key, hide: false};
+          this.listObject.items[index].value.title = res.val().title;
+          this.listObject.items[index].value.count = res.val().count;
+          this.listObject.items[index].value.weight = res.val().weight;
+          this.listObject.items[index].value.complete = res.val().complete;
           this._$rootScope.$apply();
         });
   }
@@ -231,7 +242,7 @@ class ListController {
   addItemToList(itemId) {
     this._listsService.getItemById(itemId)
         .then((res) => {
-          this.listObject.items.push({value: res.val(), key: res.key, hide: false});
+          this.listObject.items.push({value: res.val(), key: res.key, hide: false, level: 0});
           this._$rootScope.$apply();
         });
   }
@@ -260,8 +271,20 @@ class ListController {
   }
 
   updateFrontItem(item) {
+    let weight = this.listObject.items[findIndex(this.listObject.items, o => o.key === item.key)].value.weight;
+    this.listObject.items[findIndex(this.listObject.items, o => o.key == item.key)].value.weight = weight === '' ? 0 : weight;
     this._listsService.updateFrontItem(this.listObject.id, item);
     item.hide = false;
+    this.updateChildFront(item);
+  }
+
+  updateChildFront(item) {
+    if(item.value.childs instanceof Object) {
+      for(let x in item.value.childs){
+        this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])].value.complete = item.value.complete;
+        this.updateChildFront(this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])]);
+      }
+    }
   }
 
   getSumNotComplete() {
@@ -322,6 +345,81 @@ class ListController {
 
   changeIsList() {
     this._listsService.updateIsList(this.listObject.id, this.listObject.is_list);
+  }
+
+  addSubItem(item) {
+    let itemId = this._listsService.newSubItem(this.listObject.id, item, this.newSubItem);
+    this.createOnSubItem(itemId);
+    this.newSubItem = "";
+  }
+
+  checkOnNullWeight(item) {
+    let weight = this.listObject.items[findIndex(this.listObject.items, o => o.key === item.key)].value.weight;
+    this.listObject.items[findIndex(this.listObject.items, o => o.key == item.key)].value.weight = weight === 0 ? '' : weight;
+  }
+
+  createOnSubItem(itemId) {
+    this._listsService.getItemById(itemId)
+      .then(res => {
+        let parentId = res.val().parent;
+        let index = findIndex(this.listObject.items, o => o.key === parentId);
+        this.listObject.items[index].level = this.listObject.items[index].level ? this.listObject.items[index].level : 0;
+        let level = this.listObject.items[index].level > 9 ? 10 : this.listObject.items[index].level+1;
+        this.listObject.items = this._listsService.addToMasByIndex(this.listObject.items, index+1, {value: res.val(), key: res.key, hide: false, level: level});
+        if(res.val().childs instanceof Object) {
+          this.loadAllChild(res.key, res.val().childs);
+        }
+      });
+  }
+
+  loadAllChild(parentId, childs) {
+    for(let x in childs) {
+      this.createOnSubItem(childs[x]);
+    }
+  }
+
+  hasChild(item) {
+    if(item.value.childs instanceof Object){
+      for(let x in item.value.childs) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  rootIsComplete(item) {
+    let parent = item;
+    let findParent = {};
+    while(parent !== null) {
+      findParent = parent;
+      parent = this.findParent(parent);
+    }
+    return findParent.value.complete;
+  }
+
+  findParent(index) {
+    if(index.value.parent === '' || !index.value.parent) {
+      return null;
+    }
+    return this.listObject.items[findIndex(this.listObject.items, o => o.key === index.value.parent)];
+  }
+
+  getSumWeightChild(item) {
+    let sum = 0;
+    if(!(item.value.childs instanceof Object)){
+      return sum;
+    }
+    for(let x in item.value.childs) {
+      let newItem = this.listObject.items[findIndex(this.listObject.items, o => o.key === item.value.childs[x])];
+      if(newItem) {
+        if(newItem.value.childs instanceof Object) {
+          sum += this.getSumWeightChild(newItem);
+        }else{
+          sum += newItem.value.weight*newItem.value.count;
+        }
+      }
+    }
+    return sum;
   }
 
 }
