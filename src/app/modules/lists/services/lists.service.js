@@ -95,7 +95,7 @@ class ListsService {
             .then(res => {
               for(let x in res.val()) {
                 if(res.val()[x] === email){
-                  firebase.database().ref().child('lists/'+idList+'/share_email/'+x).remove();
+                  firebase.database().ref().child('lists/'+key+'/share_email/'+x).remove();
                   break;
                 }
               }

@@ -45,6 +45,36 @@ class ListController {
     }
   }
 
+  creteOnDeleteShareForUser() {
+    let _this = this;
+    firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/share_lists').once('value')
+      .then(res => {
+        for(let x in res) {
+          if(res[x].key === this.listId){
+            firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/share_lists/' + x).on('child_removed', function(data) {
+              _this._$state.go("lists.list");
+            });
+            break;
+          }
+        }
+      });
+  }
+
+  creteOnDeleteShareForEmail() {
+    let _this = this;
+    firebase.database().ref('lists/' + this.listId + '/share_email').once('value')
+      .then(res => {
+        for(let x in res) {
+          if(res[x] === this.email){
+            firebase.database().ref('lists/' + this.listId + '/share_email' + x).on('child_removed', function(data) {
+              _this._$state.go("lists.list");
+            });
+            break;
+          }
+        }
+      });
+  }
+
   createOnChange() {
     let _this = this;
     firebase.database().ref('lists/' + this.listId).on('child_changed', function(data) {
@@ -97,6 +127,7 @@ class ListController {
                   this._$state.go('lists.list');
                 }else{
                   this.createOnChange();
+                  this.creteOnDeleteShareForUser();
                   this.loadList();
                 }
               });
@@ -129,6 +160,7 @@ class ListController {
           this._$state.go('lists.list');
         }else{
           this.createOnChange();
+          this.creteOnDeleteShareForEmail();
           this.loadList();
         }
       });
