@@ -1,10 +1,10 @@
 import {has} from 'lodash';
 
 class FriendsService {
-  constructor($resource, progressService, notifyService, $state, $rootScope, authService, appSettings) {
+  constructor($resource, progressService, chNotify, $state, $rootScope, authService, appSettings) {
     this._progressService = progressService;
     this._authService = authService;
-    this._notifyService = notifyService;
+    this._chNotify = chNotify;
     this._$state = $state;
     this._$rootScope = $rootScope;
     this._appSetting = appSettings;
@@ -57,7 +57,7 @@ class FriendsService {
     firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/friends_email/' + key).remove();
   }
 }
-FriendsService.$inject = ['$resource', 'progressService', 'notifyService', '$state', '$rootScope', 'authService', 'appSettings'];
+FriendsService.$inject = ['$resource', 'progressService', 'chNotify', '$state', '$rootScope', 'authService', 'appSettings'];
 
 export {
   FriendsService

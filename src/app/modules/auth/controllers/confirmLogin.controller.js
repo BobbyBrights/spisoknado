@@ -2,11 +2,11 @@
  * ConfirmLoginController
  */
 class ConfirmLoginController {
-    constructor($state, authService, notifyService, $stateParams, listsService, progressService, email, code, password) {
+    constructor($state, authService, chNotify, $stateParams, listsService, progressService, email, code, password) {
         this._$state = $state;
         this._$stateParams = $stateParams;
         this._authService = authService;
-        this._notifyService = notifyService;
+        this._chNotify = chNotify;
         this._progressService = progressService;
         this._listsService = listsService;
         this.email = email;
@@ -34,25 +34,25 @@ class ConfirmLoginController {
                                   "first_auth": false
                                 }
                                 firebase.database().ref('users/'+data.val()).set(user);
-                                this._notifyService.info('подтверждение прошло успешно');
+                                this._chNotify.info('подтверждение прошло успешно');
                                 var _this = this;
                                 this._authService.singIn(this.email, this.password);
                               }else{
-                                this._notifyService.error('неверный код подтвеждения');
+                                this._chNotify.error('неверный код подтвеждения');
                               }
                             })
                         }else{
-                          this._notifyService.error('такого email не существует');
+                          this._chNotify.error('такого email не существует');
                         }
                       })
             })
             .catch((error) => {
-              this._notifyService.error(error);
+              this._chNotify.error(error);
             });
     }
 }
 
-ConfirmLoginController.$inject = ['$state', 'authService', 'notifyService', '$stateParams', 'listsService', 'progressService', 'email', 'code', 'password'];
+ConfirmLoginController.$inject = ['$state', 'authService', 'chNotify', '$stateParams', 'listsService', 'progressService', 'email', 'code', 'password'];
 
 export {
     ConfirmLoginController

@@ -1,5 +1,8 @@
-class MainController {
-    constructor($state, authService, $rootScope, $stateParams, $mdDialog, appSettings, $window) {
+import {BaseController} from '../../global/controllers/baseController';
+
+class MainController extends BaseController {
+    constructor($state, authService, $rootScope, $stateParams, $mdDialog, spinnerService, appSettings, $window, chNotify) {
+        super(spinnerService, chNotify);
         this._$state = $state;
         this._$rootScope = $rootScope;
         this._authService = authService;
@@ -15,11 +18,13 @@ class MainController {
               .then((res) => {
                 if(res.val() && res.val().confirm){
                   CONSTANT_SPISOKNADO.user_uid = user.uid;
+                  _this.showSpinner = true;
                   let interval_current_user = window.setInterval(function(){
                     if(firebase.auth().currentUser!=null){
                       _this.user = firebase.auth().currentUser;
                       _this._$rootScope.$apply();
                       window.clearInterval(interval_current_user);
+                      _this.showSpinner = false;
                     }
                   },15);
                 }
@@ -55,6 +60,6 @@ class MainController {
 
 }
 
-MainController.$inject = ['$state', 'authService', '$rootScope', '$stateParams', '$mdDialog', 'appSettings', '$window'];
+MainController.$inject = ['$state', 'authService', '$rootScope', '$stateParams', '$mdDialog', 'spinnerService', 'appSettings', '$window', 'chNotify'];
 
 export {MainController}

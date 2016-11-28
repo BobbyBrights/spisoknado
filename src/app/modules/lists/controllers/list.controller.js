@@ -4,13 +4,13 @@ import {findIndex, remove} from 'lodash';
  * Created by gr on 29.07.16.
  */
 class ListController {
-  constructor($rootScope, $mdDialog, progressService, notifyService, $scope, listsService, listId, $state, email, kod) {
+  constructor($rootScope, $mdDialog, progressService, chNotify, $scope, listsService, listId, $state, email, kod) {
     this._$mdDialog = $mdDialog;
     this._progressService = progressService;
     this._$rootScope = $rootScope;
     this._$scope = $scope;
     this._$state = $state;
-    this._notifyService = notifyService;
+    this._chNotify = chNotify;
     this._listsService = listsService;
 
     this.listObject = {};
@@ -456,7 +456,7 @@ class ListController {
 
 }
 
-ListController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'notifyService', '$scope', 'listsService', 'listId', '$state', 'email', 'kod'];
+ListController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'chNotify', '$scope', 'listsService', 'listId', '$state', 'email', 'kod'];
 
 export {
   ListController

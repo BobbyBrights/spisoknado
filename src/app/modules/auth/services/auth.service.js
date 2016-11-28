@@ -1,12 +1,12 @@
 class AuthService {
-    constructor($q, $state, $rootScope, $stateParams, $resource, progressService, notifyService) {
+    constructor($q, $state, $rootScope, $stateParams, $resource, progressService, chNotify) {
         this._$q = $q;
         this._$state = $state;
         this._$resource = $resource;
         this._$rootScope = $rootScope;
         this._$stateParams = $stateParams;
         this._progressService = progressService;
-        this._notifyService = notifyService;
+        this._chNotify = chNotify;
         this.createUserId = null;
         this._authResource = $resource(`url`, {}, {
           confirm_email: {
@@ -39,14 +39,14 @@ class AuthService {
                         if(res.val().confirm){
                           _this._$state.go("app");
                         }else{
-                          _this._notifyService.info("Для активации учётной записи, пройдите по ссылке, отправленной на указанный e-mail");
+                          _this._chNotify.info("Для активации учётной записи, пройдите по ссылке, отправленной на указанный e-mail");
                           _this.logOut();
                         }
                       });
                 });
             })
             .catch(function(error) {
-              _this._notifyService.error(error);
+              _this._chNotify.error(error);
               _this._progressService.hideCircular();
             });
     }
@@ -57,7 +57,7 @@ class AuthService {
       this._progressService.showCircular();
       return firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(function(data){
-          _this._notifyService.info("Регистрация прошла успешно! Для активации учётной записи, пройдите по ссылке, отправленной на указанный e-mail");
+          _this._chNotify.info("Регистрация прошла успешно! Для активации учётной записи, пройдите по ссылке, отправленной на указанный e-mail");
           _this._progressService.hideCircular();
           firebase.auth().signInWithEmailAndPassword(email, password)
             .then(() => {
@@ -66,7 +66,7 @@ class AuthService {
             });
         })
         .catch(function(error) {
-          _this._notifyService.error(error);
+          _this._chNotify.error(error);
           _this._progressService.hideCircular();
         });
     }
@@ -126,7 +126,7 @@ class AuthService {
         firebase.auth().signOut().then(function() {
             _this._$state.go("login");
         }, function(error) {
-            _this._notifyService.error(error);
+            _this._chNotify.error(error);
         });
     }
 
@@ -177,7 +177,7 @@ class AuthService {
     }
 }
 
-AuthService.$inject = ['$q', '$state', '$rootScope', '$stateParams', '$resource', 'progressService', 'notifyService'];
+AuthService.$inject = ['$q', '$state', '$rootScope', '$stateParams', '$resource', 'progressService', 'chNotify'];
 
 export {
     AuthService

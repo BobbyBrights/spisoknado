@@ -3,12 +3,12 @@ import {findIndex, differenceBy} from 'lodash';
  * Created by gr on 10.05.16.
  */
 class ListAddModalController {
-    constructor($mdDialog, progressService, notifyService, $state, listsService, friendsService) {
+    constructor($mdDialog, progressService, chNotify, $state, listsService, friendsService) {
         this._$mdDialog = $mdDialog;
         this._listsService = listsService;
         this._progressService = progressService;
         this._$state = $state;
-        this._notifyService = notifyService;
+        this._chNotify = chNotify;
         this._friendsService = friendsService;
         this.loadingFlag = false;
         this.selectedItem = null;
@@ -42,7 +42,7 @@ class ListAddModalController {
               this.closeDialog();
           })
           .catch((error) => {
-              this._notifyService.error(error);
+              this._chNotify.error(error);
               this.loadingFlag = false;
           });
     }
@@ -85,7 +85,7 @@ class ListAddModalController {
 
 
 ListAddModalController.$inject = ['$mdDialog', 'progressService',
-    'notifyService', '$state', 'listsService', 'friendsService'
+    'chNotify', '$state', 'listsService', 'friendsService'
 ];
 
 export {

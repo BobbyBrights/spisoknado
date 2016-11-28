@@ -1,14 +1,14 @@
 import {findIndex, differenceBy} from 'lodash';
 
 class ListEditModalController {
-    constructor($mdDialog, $rootScope, progressService, authService, notifyService, $state, listsService, friendsService, list) {
+    constructor($mdDialog, $rootScope, progressService, authService, chNotify, $state, listsService, friendsService, list) {
         this._$mdDialog = $mdDialog;
         this._$rootScope = $rootScope;
         this._listsService = listsService;
         this._progressService = progressService;
         this._authService = authService;
         this._$state = $state;
-        this._notifyService = notifyService;
+        this._chNotify = chNotify;
         this._friendsService = friendsService;
         this.loadingFlag = false;
         this.selectedItem = null;
@@ -72,7 +72,7 @@ class ListEditModalController {
               this.closeDialog();
           })
           .catch((error) => {
-              this._notifyService.error(error);
+              this._chNotify.error(error);
               this.loadingFlag = false;
           });
     }
@@ -115,7 +115,7 @@ class ListEditModalController {
 
 
 ListEditModalController.$inject = ['$mdDialog', '$rootScope', 'progressService', 'authService',
-    'notifyService', '$state', 'listsService', 'friendsService', 'list'
+    'chNotify', '$state', 'listsService', 'friendsService', 'list'
 ];
 
 export {

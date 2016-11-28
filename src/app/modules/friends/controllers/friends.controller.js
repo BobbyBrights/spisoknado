@@ -3,13 +3,13 @@ import {FriendEditController} from '../modal/edit/controllers/friendsEditControl
 import {findIndex, remove} from 'lodash';
 
 class FriendsController {
-  constructor($rootScope, $mdDialog, progressService, notifyService, $scope, friendsService, $state, authService) {
+  constructor($rootScope, $mdDialog, progressService, chNotify, $scope, friendsService, $state, authService) {
     this._$mdDialog = $mdDialog;
     this._progressService = progressService;
     this._$rootScope = $rootScope;
     this._$scope = $scope;
     this._$state = $state;
-    this._notifyService = notifyService;
+    this._chNotify = chNotify;
     this._friendsService = friendsService;
     this._authService = authService;
     this._authService.createAuthToken();
@@ -76,7 +76,7 @@ class FriendsController {
 
 }
 
-FriendsController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'notifyService', '$scope', 'friendsService', '$state', 'authService'];
+FriendsController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'chNotify', '$scope', 'friendsService', '$state', 'authService'];
 
 export {
   FriendsController
