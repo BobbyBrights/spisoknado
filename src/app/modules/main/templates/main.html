@@ -1,17 +1,17 @@
 <md-toolbar class="md-hue-2">
-  <div class="md-toolbar-tools">
+  <div class="md-toolbar-tools" layout="row">
     <span flex></span>
     <md-button class="md-raised" ng-click="mainCtrl.login()" ng-show="!mainCtrl.user" aria-label="spisoknado">
       Войти
     </md-button>
     <md-button class="md-raised" ng-click="mainCtrl.myList()" ng-show="mainCtrl.user" aria-label="spisoknado">
-      Мои списки
+      <md-icon>list</md-icon>
     </md-button>
     <md-button class="md-raised" ng-click="mainCtrl.createList()" ng-show="mainCtrl.user" aria-label="spisoknado">
-      Создать список
+      <md-icon>add</md-icon>
     </md-button>
     <md-button class="md-raised" ng-click="mainCtrl.myFriends()" ng-show="mainCtrl.user" aria-label="spisoknado">
-      Друзья
+      <md-icon>group</md-icon>
     </md-button>
     <!--user drop-down-->
     <md-menu>

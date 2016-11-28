@@ -1,16 +1,17 @@
 import {findIndex, remove} from 'lodash';
+import {BaseController} from '../../global/controllers/baseController';
 
 /**
  * Created by gr on 29.07.16.
  */
-class ListController {
-  constructor($rootScope, $mdDialog, progressService, chNotify, $scope, listsService, listId, $state, email, kod) {
+class ListController extends BaseController {
+  constructor($rootScope, $mdDialog, progressService, spinnerService, chNotify, $scope, listsService, listId, $state, email, kod) {
+    super(spinnerService, chNotify);
     this._$mdDialog = $mdDialog;
     this._progressService = progressService;
     this._$rootScope = $rootScope;
     this._$scope = $scope;
     this._$state = $state;
-    this._chNotify = chNotify;
     this._listsService = listsService;
 
     this.listObject = {};
@@ -30,6 +31,7 @@ class ListController {
     }
     this.editable = true;
 
+    this.showSpinner = true;
     if(this.email!='' && this.kod!=''){
       this.checkListByShareEmail();
       this.editable = false;
@@ -198,6 +200,9 @@ class ListController {
     for(let x in items){
       length++;
     }
+    if(length === 0) {
+      this.showSpinner = false;
+    }
     let loadItem = 0;
     for(let x in items){
       this._listsService.getItemById(items[x])
@@ -208,6 +213,7 @@ class ListController {
             this.loadAllChild(res.key, res.val().childs);
           }
           if(loadItem >= length){
+            this.showSpinner = false;
             this._$rootScope.$apply();
           }
         });
@@ -456,7 +462,7 @@ class ListController {
 
 }
 
-ListController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'chNotify', '$scope', 'listsService', 'listId', '$state', 'email', 'kod'];
+ListController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'spinnerService', 'chNotify', '$scope', 'listsService', 'listId', '$state', 'email', 'kod'];
 
 export {
   ListController

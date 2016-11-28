@@ -1,22 +1,25 @@
 import {ListEditModalController} from '../modal/edit/listEdit.controller';
+import {BaseController} from '../../global/controllers/baseController';
 import {findIndex, remove} from 'lodash';
 
-class ListsController {
-  constructor($rootScope, $mdDialog, progressService, chNotify, $scope, listsService, $state, authService) {
+class ListsController extends BaseController {
+  constructor($rootScope, $mdDialog, progressService, spinnerService, chNotify, $scope, listsService, $state, authService) {
+    super(spinnerService, chNotify);
     this._$mdDialog = $mdDialog;
     this._progressService = progressService;
     this._$rootScope = $rootScope;
     this._authService = authService;
     this._$scope = $scope;
     this._$state = $state;
-    this._chNotify = chNotify;
     this._listsService = listsService;
     this.myLists = [];
     this.myShareLists = [];
     let _this = this;
     this._authService.createAuthToken();
+    _this.showSpinner = true;
     let interval_current_user = window.setInterval(function(){
       if(CONSTANT_SPISOKNADO.user_uid!=null){
+        _this.showSpinner = false;
         if(!CONSTANT_SPISOKNADO.user_first_auth) {
           _this._listsService.createShareListByNewUserBegin(CONSTANT_SPISOKNADO.user_email, CONSTANT_SPISOKNADO.user_uid);
         }
@@ -136,7 +139,7 @@ class ListsController {
 
 }
 
-ListsController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'chNotify', '$scope', 'listsService', '$state', 'authService'];
+ListsController.$inject = ['$rootScope', '$mdDialog', 'progressService', 'spinnerService', 'chNotify', '$scope', 'listsService', '$state', 'authService'];
 
 export {
   ListsController
