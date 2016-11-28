@@ -196,6 +196,7 @@ class ListController extends BaseController {
         this.showSpinner = false;
         this.listObject = res.val();
         this.listObject.id = res.key;
+        this._$rootScope.$apply();
         this.loadParentItems();
       });
   }
