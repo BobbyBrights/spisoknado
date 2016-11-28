@@ -1,10 +1,14 @@
 
 <md-card class="admin-card" layout="column">
   <md-card-content layout="column" layout-align="space-between">
-  <div layout="row">
+  <div layout="row" layout-wrap>
+    <div layout="row" flex="100">
+      <div class="md-headline" flex="45" layout="row" layout-align="start center">Мои списки</div>
+      <span flex="10"></span>
+      <div class="md-headline" flex="45" layout="row" layout-align="end center">Доступные списки</div>
+    </div>
     <div layout="row" flex="45">
       <div layout="column" flex="100">
-        <h3 class="md-headline">Мои списки</h3><br>
         <div layout="column" layout-align="space-between">
             <table class="table table-hover clickable no-padding table-text-align-top">
               <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myLists" >
@@ -38,7 +42,6 @@
     <span flex="10"></span>
     <div layout="row" flex="45">
       <div layout="column" flex="100">
-        <h3 class="md-headline">Доступные списки</h3><br>
         <div layout="column" layout-align="space-between">
             <table class="table table-hover clickable no-padding table-text-align-top">
               <tr ng-click="lists.goToList(list)" class="md-body-2" ng-repeat="list in lists.myShareLists" >

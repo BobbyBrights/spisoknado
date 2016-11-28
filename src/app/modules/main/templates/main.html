@@ -1,6 +1,5 @@
 <md-toolbar class="md-hue-2">
   <div class="md-toolbar-tools" layout="row" layout-wrap>
-    <span flex></span>
     <md-button class="md-raised" ng-click="mainCtrl.login()" ng-show="!mainCtrl.user" aria-label="spisoknado">
       Войти
     </md-button>
@@ -13,6 +12,7 @@
     <md-button class="md-raised" ng-click="mainCtrl.myFriends()" ng-show="mainCtrl.user" aria-label="spisoknado">
       <md-icon>group</md-icon>
     </md-button>
+    <span flex></span>
     <!--user drop-down-->
     <md-menu>
       <md-button ng-click="$mdOpenMenu($event)" ng-show="mainCtrl.user" aria-label="spisoknado">
