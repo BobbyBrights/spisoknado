@@ -32,7 +32,7 @@ class ConfirmLoginController {
                                   "friends_email": "",
                                   "confirm": true,
                                   "first_auth": false
-                                }
+                                };
                                 firebase.database().ref('users/'+data.val()).set(user);
                                 this._chNotify.info('подтверждение прошло успешно');
                                 var _this = this;

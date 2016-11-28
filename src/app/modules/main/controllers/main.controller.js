@@ -17,16 +17,19 @@ class MainController extends BaseController {
             firebase.database().ref('users/'+user.uid).once('value')
               .then((res) => {
                 if(res.val() && res.val().confirm){
-                  CONSTANT_SPISOKNADO.user_uid = user.uid;
                   _this.showSpinner = true;
+                  CONSTANT_SPISOKNADO.user_uid = user.uid;
                   let interval_current_user = window.setInterval(function(){
                     if(firebase.auth().currentUser!=null){
                       _this.user = firebase.auth().currentUser;
+                      _this.showSpinner = false;
                       _this._$rootScope.$apply();
                       window.clearInterval(interval_current_user);
-                      _this.showSpinner = false;
+                      _this._$state.go('lists.list');
                     }
                   },15);
+                }else{
+                  _this._chNotify.error('Вы не авторизованы или ваш аккаунт не подтверждён');
                 }
               });
           }
