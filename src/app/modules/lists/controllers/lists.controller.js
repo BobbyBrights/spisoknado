@@ -76,6 +76,9 @@ class ListsController extends BaseController {
 
           _this._listsService.getListById(data.val().key)
             .then(data => {
+                if(data.val() === null) {
+                  return;
+                }
                 var list = data.val();
                 list.key = data.key;
                 _this.myShareLists.push(list);

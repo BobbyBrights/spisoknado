@@ -31,7 +31,6 @@ class ListController extends BaseController {
     }
     this.editable = true;
 
-    this.showSpinner = true;
     if(this.email!='' && this.kod!=''){
       this.checkListByShareEmail();
       this.editable = false;
@@ -122,8 +121,10 @@ class ListController extends BaseController {
   }
 
   checkPermission() {
+    this.showSpinner = true;
     this._listsService.iHavePermissionToList(this.listId)
         .then((res) => {
+          this.showSpinner = false;
           let flag = false;
           for(let x in res.val()){
             if(res.val()[x].key==this.listId){
@@ -132,8 +133,10 @@ class ListController extends BaseController {
             }
           }
           if(!flag){
+            this.showSpinner = true;
             this._listsService.iHavePermissionToShareList(this.listId)
               .then((res) => {
+                this.showSpinner = false;
                 let flag = false;
                 for(let x in res.val()){
                   if(res.val()[x].key==this.listId){
@@ -157,8 +160,10 @@ class ListController extends BaseController {
   }
 
   checkListByShareEmail() {
+    this.showSpinner = true;
     this._listsService.getListById(this.listId)
       .then((res) => {
+        this.showSpinner = false;
         if(res.val().secret_key !== this.kod){
           this._$state.go('lists.list');
           return;
@@ -185,8 +190,10 @@ class ListController extends BaseController {
   }
 
   loadList() {
+    this.showSpinner = true;
     this._listsService.getListById(this.listId)
       .then((res) => {
+        this.showSpinner = false;
         this.listObject = res.val();
         this.listObject.id = res.key;
         this.loadParentItems();
@@ -200,20 +207,18 @@ class ListController extends BaseController {
     for(let x in items){
       length++;
     }
-    if(length === 0) {
-      this.showSpinner = false;
-    }
     let loadItem = 0;
     for(let x in items){
+      this.showSpinner = true;
       this._listsService.getItemById(items[x])
         .then((res) => {
+          this.showSpinner = false;
           loadItem++;
           this.listObject.items.push({value: res.val(), key: res.key, hide: false, level: 0});
           if(res.val().childs instanceof Object) {
             this.loadAllChild(res.key, res.val().childs);
           }
           if(loadItem >= length){
-            this.showSpinner = false;
             this._$rootScope.$apply();
           }
         });
@@ -393,8 +398,10 @@ class ListController extends BaseController {
   }
 
   createOnSubItem(itemId) {
+    this.showSpinner = true;
     this._listsService.getItemById(itemId)
       .then(res => {
+        this.showSpinner = false;
         if(!res.val()){
           return;
         }

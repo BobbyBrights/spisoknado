@@ -16,3 +16,18 @@
     width: 100%;
   }
 }
+
+.md-toolbar-tools {
+  max-height: 100000px;
+  height: auto;
+  min-height: 56px;
+
+  button {
+    margin: 5px;
+    padding: 0;
+    min-height: 0;
+    height: auto;
+    width: auto;
+    min-width: 0;
+  }
+}
