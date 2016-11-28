@@ -1,5 +1,5 @@
 <md-toolbar class="md-hue-2">
-  <div class="md-toolbar-tools" layout="row" layout-wrap>
+  <div class="md-toolbar-tools" layout="row">
     <md-button class="md-raised" ng-click="mainCtrl.login()" ng-show="!mainCtrl.user" aria-label="spisoknado">
       Войти
     </md-button>
@@ -14,7 +14,7 @@
     </md-button>
     <span flex></span>
     <!--user drop-down-->
-    <md-menu>
+    <md-menu flex="50">
       <md-button ng-click="$mdOpenMenu($event)" ng-show="mainCtrl.user" aria-label="spisoknado">
         {{mainCtrl.user.email}}
       </md-button>
