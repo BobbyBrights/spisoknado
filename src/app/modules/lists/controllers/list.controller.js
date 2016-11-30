@@ -113,7 +113,6 @@ class ListController extends BaseController {
     firebase.database().ref('lists/' + this.listId).once('value')
       .then(res => {
         this.listObject.is_list = res.val().is_list;
-        this.listObject.not_consider_count = res.val().not_consider_count;
         this.listObject.share_email = res.val().share_email;
         this.listObject.share_users = res.val().share_users;
         this.listObject.title = res.val().title;
@@ -346,11 +345,11 @@ class ListController extends BaseController {
     }
     let sum = 0;
     this.listObject.items.forEach(it => {
-      if(it.value.complete) {
+      if(it.value.complete && it.value.sumConsider) {
         sum += it.value.weight*it.value.count;
       }
     });
-    return sum-this.listObject.not_consider_count;
+    return sum;
   }
 
   getAllSum() {
@@ -359,9 +358,11 @@ class ListController extends BaseController {
     }
     let sum = 0;
     this.listObject.items.forEach(it => {
+      if(it.value.sumConsider) {
         sum += it.value.weight*it.value.count;
+      }
     });
-    return sum-this.listObject.not_consider_count;
+    return sum;
   }
 
   updateNotConsiderCount() {
@@ -379,8 +380,7 @@ class ListController extends BaseController {
   }
 
   setNullConsiderCount() {
-    this.listObject.not_consider_count = 0;
-    this._listsService.updateNotConsiderCount(this.listObject.id, 0);
+    this._listsService.updateNotConsiderCount(this.listObject.items);
   }
 
   changeIsList() {

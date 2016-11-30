@@ -203,6 +203,7 @@ class ListsService {
       updates[''+newPostKey].complete = false;
       updates[''+newPostKey].parent = "";
       updates[''+newPostKey].childs = "";
+      updates[''+newPostKey].newConsider = true;
       updates[''+newPostKey].list_id = listId;
       firebase.database().ref().child('items').update(updates);
       let newPostKey1 = firebase.database().ref().child('lists/' + listId + '/items').push().key;
@@ -286,12 +287,14 @@ class ListsService {
     }
   }
 
-  updateNotConsiderCount(id, sum) {
-    let ref = firebase.database().ref().child('lists/' + id);
-    ref.update({
-      not_consider_count: sum
+  updateNotConsiderCount(items) {
+    items.forEach(item => {
+      let ref = firebase.database().ref().child('items/' + item.key);
+      ref.update({
+        newConsider: true
+      });
     });
-    this.writeChangeToList(id, '', "update_info");
+    //this.writeChangeToList(id, '', "update_info");
   }
 
   removeList(list) {
