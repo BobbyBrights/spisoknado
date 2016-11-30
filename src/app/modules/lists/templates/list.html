@@ -42,7 +42,7 @@
 
         <div class="margin-level" ng-class="'margin-level__' + item.level"></div>
 
-        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-show="!item.hide && listCardCtrl.editable" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado">
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-show="!item.hide && listCardCtrl.editable" ng-change="listCardCtrl.updateFrontItem(item, true)" aria-label="spisoknado">
         </md-checkbox>
 
         <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-show="!listCardCtrl.editable" disabled aria-label="spisoknado">
@@ -72,7 +72,7 @@
 
 
 
-        <md-menu md-position-mode="target-right target">
+       <!-- <md-menu md-position-mode="target-right target">
           <md-button class="md-icon-button md-icon-button-delete" ng-click="$mdOpenMenu($event)" ng-show="listCardCtrl.showRemove">
             <md-tooltip>подпункт</md-tooltip>
             <md-icon>keyboard_return</md-icon>
@@ -88,7 +88,7 @@
               </form>
             </md-menu-item>
           </md-menu-content>
-        </md-menu>
+        </md-menu> -->
 
         <span flex="10" ng-show="listCardCtrl.showRemove"></span>
 
@@ -123,12 +123,17 @@
     <div layout="column">
       <div ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="listCardCtrl.rootIsComplete(item)">
         <div class="margin-level" ng-class="'margin-level__' + item.level"></div>
-        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-change="listCardCtrl.updateFrontItem(item)" aria-label="spisoknado" ng-show="listCardCtrl.editable && item.level === 0"></md-checkbox>
-        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" disabled aria-label="spisoknado" ng-show="!listCardCtrl.editable && item.level !== 0 || listCardCtrl.editable && item.level !== 0 "></md-checkbox>
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-change="listCardCtrl.updateFrontItem(item, true)" aria-label="spisoknado" ng-show="listCardCtrl.editable && item.level === 0"></md-checkbox>
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" disabled aria-label="spisoknado" ng-show="!listCardCtrl.editable && item.level !== 0 || listCardCtrl.editable && item.level !== 0"></md-checkbox>
         <span class="list-item spisoknado-pointer spisoknado-list-item">{{item.value.title}}</span>
         <span flex></span>
-        <span ng-show="!listCardCtrl.listObject.is_list && !listCardCtrl.hasChild(item)">{{item.value.weight}} * {{item.value.count}} = {{item.value.weight * item.value.count}}</span>
-        <span ng-show="!listCardCtrl.listObject.is_list && listCardCtrl.hasChild(item)">{{listCardCtrl.getSumWeightChild(item)}}</span>
+        <span ng-show="!listCardCtrl.listObject.is_list && !listCardCtrl.hasChild(item) && !listCardCtrl.showRemove">{{item.value.weight}} * {{item.value.count}} = {{item.value.weight * item.value.count}}</span>
+        <span ng-show="!listCardCtrl.listObject.is_list && listCardCtrl.hasChild(item) && !listCardCtrl.showRemove">{{listCardCtrl.getSumWeightChild(item)}}</span>
+
+        <md-button class="md-icon-button md-icon-button-delete" ng-click="listCardCtrl.removeItem(item.key)" ng-show="listCardCtrl.showRemove">
+          <md-tooltip>Удалить</md-tooltip>
+          <md-icon>delete_forever</md-icon>
+        </md-button>
       </div>
     </div>
 

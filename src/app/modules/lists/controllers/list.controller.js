@@ -306,7 +306,14 @@ class ListController extends BaseController {
     });
   }
 
-  updateFrontItem(item) {
+  updateFrontItem(item, isComplete) {
+    if(isComplete && !item.value.complete && !item.value.newConsider) {
+        item.value.newConsider = true;
+        let ref = firebase.database().ref().child('items/' + item.key);
+        ref.update({
+          newConsider: true
+        });
+    }
     let weight = this.listObject.items[findIndex(this.listObject.items, o => o.key === item.key)].value.weight;
     this.listObject.items[findIndex(this.listObject.items, o => o.key == item.key)].value.weight = weight === '' ? 0 : weight;
     this._listsService.updateFrontItem(this.listObject.id, item);
@@ -345,7 +352,7 @@ class ListController extends BaseController {
     }
     let sum = 0;
     this.listObject.items.forEach(it => {
-      if(it.value.complete && it.value.sumConsider) {
+      if(it.value.complete && it.value.newConsider) {
         sum += it.value.weight*it.value.count;
       }
     });
@@ -358,7 +365,7 @@ class ListController extends BaseController {
     }
     let sum = 0;
     this.listObject.items.forEach(it => {
-      if(it.value.sumConsider) {
+      if(it.value.newConsider) {
         sum += it.value.weight*it.value.count;
       }
     });
@@ -369,18 +376,17 @@ class ListController extends BaseController {
     if(!this.listObject.items || !this.listObject.items.length) {
       return 0;
     }
-    let sum = 0;
     this.listObject.items.forEach(it => {
-        if(it.value.complete){
-          sum += it.value.weight*it.value.count;
-        }
+          it.value.newConsider = !it.value.complete;
     });
-    this.listObject.not_consider_count = sum;
-    this._listsService.updateNotConsiderCount(this.listObject.id, sum);
+    this._listsService.updateNotConsiderCount(this.listObject.id, this.listObject.items, true);
   }
 
   setNullConsiderCount() {
-    this._listsService.updateNotConsiderCount(this.listObject.items);
+    this.listObject.items.forEach(item => {
+        item.value.newConsider = true;
+    });
+    this._listsService.updateNotConsiderCount(this.listObject.id, this.listObject.items, false);
   }
 
   changeIsList() {
@@ -425,6 +431,9 @@ class ListController extends BaseController {
   }
 
   hasChild(item) {
+    if(!item || !item.value) {
+      return false;
+    }
     if(item.value.childs instanceof Object){
       for(let x in item.value.childs) {
         return true;
@@ -440,11 +449,14 @@ class ListController extends BaseController {
       findParent = parent;
       parent = this.findParent(parent);
     }
+    if(!findParent || !findParent.value) {
+      return null;
+    }
     return findParent.value.complete;
   }
 
   findParent(index) {
-    if(index.value.parent === '' || !index.value.parent) {
+    if(!index || !index.value || index.value.parent === '' || !index.value.parent) {
       return null;
     }
     return this.listObject.items[findIndex(this.listObject.items, o => o.key === index.value.parent)];
@@ -452,6 +464,9 @@ class ListController extends BaseController {
 
   getSumWeightChild(item) {
     let sum = 0;
+    if(!item || !item.value) {
+      return 0;
+    }
     if(!(item.value.childs instanceof Object)){
       return sum;
     }

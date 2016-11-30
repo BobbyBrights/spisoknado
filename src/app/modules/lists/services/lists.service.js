@@ -287,12 +287,24 @@ class ListsService {
     }
   }
 
-  updateNotConsiderCount(items) {
+  updateNotConsiderCount(id, items, newConsider) {
     items.forEach(item => {
       let ref = firebase.database().ref().child('items/' + item.key);
-      ref.update({
-        newConsider: true
-      });
+      if(!newConsider) {
+        ref.update({
+          newConsider: true
+        });
+      }else{
+        if(item.value.complete) {
+          ref.update({
+            newConsider: false
+          });
+        }else{
+          ref.update({
+            newConsider: true
+          });
+        }
+      }
     });
     //this.writeChangeToList(id, '', "update_info");
   }
