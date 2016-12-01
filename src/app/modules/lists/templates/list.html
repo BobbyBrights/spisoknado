@@ -9,7 +9,7 @@
       <md-switch ng-model="listCardCtrl.showRemove" aria-label="spisoknado" class="md-warn">
         Удаление и добавление
       </md-switch>
-      <span flex></span>
+      <span flex="10"></span>
       <md-switch ng-model="listCardCtrl.listObject.is_list" aria-label="spisoknado" class="md-warn" ng-change="listCardCtrl.changeIsList()">
         Список дел
       </md-switch>
@@ -92,8 +92,10 @@
 
         <span flex="10" ng-show="listCardCtrl.showRemove"></span>
 
+        <md-button class="md-icon-button md-icon-button-consider" ng-click="listCardCtrl.setOldConsider(item.key)" ng-show="listCardCtrl.showRemove">
+          <md-icon>arrow_downward</md-icon>
+        </md-button>
         <md-button class="md-icon-button md-icon-button-delete" ng-click="listCardCtrl.removeItem(item.key)" ng-show="listCardCtrl.showRemove">
-          <md-tooltip>Удалить</md-tooltip>
           <md-icon>delete_forever</md-icon>
         </md-button>
 
@@ -114,6 +116,16 @@
         </section>
     </form>
 
+    <div layout="row" layout-align="start center" ng-show="listCardCtrl.editable">
+      <md-switch ng-model="listCardCtrl.showRemove" aria-label="spisoknado" class="md-warn">
+        Удаление и добавление
+      </md-switch>
+      <span flex="10"></span>
+      <md-switch ng-model="listCardCtrl.listObject.is_list" aria-label="spisoknado" class="md-warn" ng-change="listCardCtrl.changeIsList()">
+        Список дел
+      </md-switch>
+    </div>
+
     <div layout="column" ng-if="listCardCtrl.editable && !listCardCtrl.listObject.is_list">
       Сумма не купленного: {{listCardCtrl.getSumNotComplete() ? listCardCtrl.getSumNotComplete() : '0'}}  <br>
       Сумма купленного: {{listCardCtrl.getSumComplete() ? listCardCtrl.getSumComplete() : '0'}}  <br>
@@ -121,7 +133,7 @@
     </div>
 
     <div layout="column">
-      <div ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="listCardCtrl.rootIsComplete(item)">
+      <div ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="listCardCtrl.rootIsComplete(item) && item.value.newConsider && item.value.complete">
         <div class="margin-level" ng-class="'margin-level__' + item.level"></div>
         <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-change="listCardCtrl.updateFrontItem(item, true)" aria-label="spisoknado" ng-show="listCardCtrl.editable && item.level === 0"></md-checkbox>
         <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" disabled aria-label="spisoknado" ng-show="!listCardCtrl.editable && item.level !== 0 || listCardCtrl.editable && item.level !== 0"></md-checkbox>
@@ -130,8 +142,41 @@
         <span ng-show="!listCardCtrl.listObject.is_list && !listCardCtrl.hasChild(item) && !listCardCtrl.showRemove">{{item.value.weight}} * {{item.value.count}} = {{item.value.weight * item.value.count}}</span>
         <span ng-show="!listCardCtrl.listObject.is_list && listCardCtrl.hasChild(item) && !listCardCtrl.showRemove">{{listCardCtrl.getSumWeightChild(item)}}</span>
 
+        <md-button class="md-icon-button md-icon-button-consider" ng-click="listCardCtrl.setOldConsider(item.key)" ng-show="listCardCtrl.showRemove">
+          <md-icon>arrow_downward</md-icon>
+        </md-button>
         <md-button class="md-icon-button md-icon-button-delete" ng-click="listCardCtrl.removeItem(item.key)" ng-show="listCardCtrl.showRemove">
-          <md-tooltip>Удалить</md-tooltip>
+          <md-icon>delete_forever</md-icon>
+        </md-button>
+      </div>
+    </div>
+
+    <div ng-show="listCardCtrl.listOldConsider.length" layout="column">
+
+      <div layout="row" layout-align="start center" ng-show="listCardCtrl.editable">
+        <md-switch ng-model="listCardCtrl.showRemove" aria-label="spisoknado" class="md-warn">
+          Удаление и добавление
+        </md-switch>
+        <span flex="10"></span>
+        <md-switch ng-model="listCardCtrl.listObject.is_list" aria-label="spisoknado" class="md-warn" ng-change="listCardCtrl.changeIsList()">
+          Список дел
+        </md-switch>
+      </div>
+
+      <span class="not-consider-span">Не задействованные пункты</span>
+      <div ng-repeat="item in listCardCtrl.listObject.items" layout="row" ng-if="listCardCtrl.rootIsComplete(item) && !item.value.newConsider && item.value.complete">
+        <div class="margin-level" ng-class="'margin-level__' + item.level"></div>
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" ng-change="listCardCtrl.updateFrontItem(item, true)" aria-label="spisoknado" ng-show="listCardCtrl.editable && item.level === 0"></md-checkbox>
+        <md-checkbox class="checkbox-in-item" ng-model="item.value.complete" disabled aria-label="spisoknado" ng-show="!listCardCtrl.editable && item.level !== 0 || listCardCtrl.editable && item.level !== 0"></md-checkbox>
+        <span class="list-item spisoknado-pointer spisoknado-list-item">{{item.value.title}}</span>
+        <span flex></span>
+        <span ng-show="!listCardCtrl.listObject.is_list && !listCardCtrl.hasChild(item) && !listCardCtrl.showRemove">{{item.value.weight}} * {{item.value.count}} = {{item.value.weight * item.value.count}}</span>
+        <span ng-show="!listCardCtrl.listObject.is_list && listCardCtrl.hasChild(item) && !listCardCtrl.showRemove">{{listCardCtrl.getSumWeightChild(item)}}</span>
+
+        <md-button class="md-icon-button md-icon-button-consider" ng-click="listCardCtrl.setNewConsider(item.key)" ng-show="listCardCtrl.showRemove">
+          <md-icon>arrow_upward</md-icon>
+        </md-button>
+        <md-button class="md-icon-button md-icon-button-delete" ng-click="listCardCtrl.removeItem(item.key)" ng-show="listCardCtrl.showRemove">
           <md-icon>delete_forever</md-icon>
         </md-button>
       </div>

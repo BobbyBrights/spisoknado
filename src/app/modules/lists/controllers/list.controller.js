@@ -47,6 +47,19 @@ class ListController extends BaseController {
     }
   }
 
+  get listOldConsider() {
+    let list = [];
+    if(!this.listObject || !this.listObject.items || !angular.isFunction(this.listObject.items.forEach)) {
+      return list;
+    }
+    this.listObject.items.forEach(item => {
+      if(!item.value.newConsider && item.value.complete) {
+        list.push(item);
+      }
+    });
+    return list;
+  }
+
   creteOnDeleteShareForUser() {
     let _this = this;
     firebase.database().ref('users/' + CONSTANT_SPISOKNADO.user_uid + '/share_lists').once('value')
@@ -344,6 +357,24 @@ class ListController extends BaseController {
       }
     });
     return sum;
+  }
+
+  setNewConsider(key) {
+    this.listObject.items[findIndex(this.listObject.items, item => item.key === key)].value.newConsider = true;
+    let ref = firebase.database().ref().child('items/' + key);
+    ref.update({
+      newConsider: true
+    });
+  }
+
+  setOldConsider(key) {
+    this.listObject.items[findIndex(this.listObject.items, item => item.key === key)].value.newConsider = false;
+    this.listObject.items[findIndex(this.listObject.items, item => item.key === key)].value.complete = true;
+    let ref = firebase.database().ref().child('items/' + key);
+    ref.update({
+      newConsider: false,
+      complete: true
+    });
   }
 
   getSumComplete() {
