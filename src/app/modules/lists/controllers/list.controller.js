@@ -30,6 +30,7 @@ class ListController extends BaseController {
       this.countMas.push(i);
     }
     this.editable = true;
+    this.sort = 0;
 
     if(this.email!='' && this.kod!=''){
       this.checkListByShareEmail();
@@ -58,6 +59,54 @@ class ListController extends BaseController {
       }
     });
     return list;
+  }
+
+  setSort() {
+    if(!this.listObject.items) {
+      return;
+    }
+    switch (parseInt(this.sort)) {
+      case 0:
+        return this.listObject.items.sort((a,b) => {
+            if(a.$$hashKey > b.$$hashKey) {
+              return 1;
+            }
+            if(a.$$hashKey < b.$$hashKey) {
+              return -1;
+            }
+            return 0;
+          });
+      case 1:
+        return this.listObject.items.sort((a,b) => {
+            if(a.value.title.toLowerCase() > b.value.title.toLowerCase()) {
+              return 1;
+            }
+            if(a.value.title.toLowerCase() < b.value.title.toLowerCase()) {
+              return -1;
+            }
+            return 0;
+          });
+      case 2:
+        return this.listObject.items.sort((a,b) => {
+            if(a.value.count*a.value.weight > b.value.count*b.value.weight) {
+              return -1;
+            }
+            if(a.value.count*a.value.weight < b.value.count*b.value.weight) {
+              return 1;
+            }
+            return 0;
+          });
+      default:
+        return this.listObject.items.sort((a,b) => {
+            if(a.$$hashKey > b.$$hashKey) {
+              return 1;
+            }
+            if(a.$$hashKey < b.$$hashKey) {
+              return -1;
+            }
+            return 0;
+          });
+    }
   }
 
   creteOnDeleteShareForUser() {

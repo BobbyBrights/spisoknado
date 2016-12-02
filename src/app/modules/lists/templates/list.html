@@ -14,6 +14,17 @@
         Список дел
       </md-switch>
     </div>
+    <div layout="row" layout-align="start center" ng-show="listCardCtrl.editable">
+      <md-input-container>
+        <label>Сортировка</label>
+        <md-select ng-model="listCardCtrl.sort" ng-change="listCardCtrl.setSort()">
+          <md-option value="0">По дате добавления</md-option>
+          <md-option value="1">По алфавиту</md-option>
+          <md-option value="2">По стоимости</md-option>
+        </md-select>
+      </md-input-container>
+      <span flex></span>
+    </div>
 
     <div layout="row" layout-align="start top" ng-show="listCardCtrl.editable">
       <div layout="column" ng-show="!listCardCtrl.listObject.is_list">

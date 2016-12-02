@@ -156,3 +156,13 @@ span.not-consider-span {
   font-weight: 600;
   margin: 20px 0;
 }
+
+.no-margin {
+  margin: 0;
+}
+
+md-switch {
+  .no-margin {
+    margin: 0;
+  }
+}
